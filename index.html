@@ -1,0 +1,1166 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>سامانه ثبت و تحویل سفیران</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.js"></script>
+
+<style>
+:root{
+--blue:#1769d2;
+--navy:#122b4a;
+--ink:#17263a;
+--muted:#68788c;
+--bg:#f3f6fb;
+--line:#dfe7f0;
+--green:#15965a;
+--red:#bd3333;
+--amber:#b7791f
+}
+*{box-sizing:border-box}
+body{
+margin:0;
+background:var(--bg);
+color:var(--ink);
+font-family:Tahoma,Arial,sans-serif
+}
+.shell{min-height:100vh;padding:22px 14px 40px}
+.wrap{max-width:900px;margin:auto}
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+flex-wrap:wrap;
+margin-bottom:18px
+}
+.brand{font-weight:900;color:var(--navy);font-size:18px}
+.headRight{display:flex;align-items:center;gap:10px}
+.status{
+font-size:12px;
+color:var(--green);
+background:#eaf8f0;
+padding:8px 12px;
+border-radius:30px
+}
+.status.st-load{color:var(--amber);background:#fff6e0}
+.status.st-bad{color:var(--red);background:#fdeaea}
+.logout{padding:8px 14px;font-size:13px;border-radius:30px}
+.card{
+background:white;
+border:1px solid var(--line);
+border-radius:24px;
+padding:clamp(20px,4vw,42px);
+box-shadow:0 12px 35px #1834540b;
+text-align:center
+}
+.hidden{display:none!important}
+.h1{
+font-size:clamp(28px,5vw,42px);
+line-height:1.6;
+color:var(--navy);
+margin:0 0 10px;
+font-weight:900
+}
+.sub{
+font-size:17px;
+color:var(--muted);
+line-height:2;
+margin:0 auto 22px
+}
+.toolbar,.actions{
+display:flex;
+gap:10px;
+justify-content:center;
+flex-wrap:wrap;
+margin-top:18px
+}
+.field{max-width:560px;margin:18px auto;text-align:right}
+.field label{display:block;font-weight:900;margin-bottom:9px}
+.field input,.scanbox input{
+width:100%;
+padding:17px;
+border:2px solid var(--line);
+border-radius:14px;
+font:inherit;
+font-size:20px;
+outline:none
+}
+.field input:focus,.scanbox input:focus{border-color:var(--blue)}
+button{
+font:inherit;
+border:0;
+border-radius:14px;
+padding:15px 24px;
+font-weight:900;
+cursor:pointer
+}
+button:disabled{opacity:.55;cursor:not-allowed}
+.primary{background:var(--blue);color:white}
+.secondary{background:#edf2f8;color:#38506b}
+.scanbox{
+max-width:680px;
+margin:20px auto;
+display:flex;
+gap:10px
+}
+.count{
+font-size:22px;
+font-weight:900;
+color:var(--navy);
+margin:20px
+}
+.orders{max-width:680px;margin:auto;text-align:right}
+.order{
+direction:ltr;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:10px 12px;
+border-bottom:1px solid var(--line);
+font-size:24px;
+font-weight:900
+}
+.last4{
+font-size:31px;
+color:#0d55b5;
+background:#eaf2ff;
+border:2px solid #c9ddfb;
+border-radius:9px;
+padding:2px 9px;
+margin-right:5px
+}
+.rm{
+background:#fdeaea;
+color:var(--red);
+padding:6px 12px;
+font-size:18px;
+border-radius:10px
+}
+.finish{
+margin:28px auto 5px;
+padding:22px;
+background:#fff8e9;
+border:2px dashed #edbd62;
+border-radius:20px;
+max-width:800px
+}
+.finish strong{
+display:inline-block;
+font-size:clamp(30px,5vw,44px);
+color:#754500;
+letter-spacing:2px
+}
+.finish p{
+font-size:clamp(20px,3.5vw,29px);
+font-weight:900;
+color:#855a16;
+margin:8px 0
+}
+.camera{
+width:min(100%,680px);
+aspect-ratio:16/9;
+background:#101722;
+border-radius:18px;
+overflow:hidden;
+margin:18px auto;
+position:relative
+}
+.camera video{
+width:100%;
+height:100%;
+object-fit:cover;
+transform:scaleX(-1)
+}
+.cameraHint{
+position:absolute;
+inset:0;
+display:grid;
+place-items:center;
+color:white;
+padding:18px;
+line-height:2
+}
+.dots{display:flex;gap:10px;justify-content:center;margin:18px}
+.dot{width:14px;height:14px;background:#dce5ef;border-radius:50%}
+.dot.done{background:var(--green)}
+.notice{font-weight:900;color:var(--green);line-height:2;margin:14px}
+.error{color:var(--red);line-height:2;margin:12px}
+.small{font-size:13px;color:#8290a1;line-height:2;margin-top:18px}
+.back{margin-top:18px}
+.result{font-size:26px;font-weight:900;color:var(--green);line-height:2;margin-bottom:22px}
+@media(max-width:600px){
+.scanbox{flex-direction:column}
+.scanbox button{width:100%}
+.card{padding:22px 14px}
+.order{font-size:20px}
+.last4{font-size:25px}
+}
+</style>
+</head>
+
+<body>
+<main class="shell">
+<div class="wrap">
+
+<header class="header">
+<div class="brand">✓ سامانه ثبت و تحویل سفیران</div>
+<div class="headRight">
+<div class="status st-load" id="engineStatus">در انتظار ورود</div>
+<button class="secondary logout hidden" id="logoutBtn" onclick="logout()">خروج</button>
+</div>
+</header>
+
+<section id="login" class="card">
+<h1 class="h1">ورود به سامانه</h1>
+<p class="sub">رمز ورود را وارد کنید.</p>
+
+<div class="field">
+<label>رمز ورود</label>
+<input id="passInput" type="password" autocomplete="current-password">
+</div>
+
+<div class="actions">
+<button class="primary" id="loginBtn" onclick="doLogin()">ورود</button>
+</div>
+
+<div class="error" id="loginError"></div>
+</section>
+
+<section id="home" class="card hidden">
+<h1 class="h1">ثبت و تحویل سفارش</h1>
+<p class="sub">
+بارکد سفارش‌ها را اسکن کنید؛ برای پایان نوبت، بارکد FINISH را اسکن کنید.
+</p>
+
+<div class="toolbar">
+<button class="secondary" onclick="startRegistration()">
+＋ ثبت سفیر جدید
+</button>
+</div>
+
+<div class="scanbox">
+<input id="orderInput" autocomplete="off" placeholder="اسکن بارکد سفارش">
+<button class="primary" onclick="addOrder()">افزودن سفارش</button>
+</div>
+
+<div class="count">
+تعداد سفارش‌ها: <span id="count">۰</span>
+</div>
+
+<div id="orderList" class="orders"></div>
+
+<div class="finish">
+<strong>FINISH</strong>
+<p>بارکد FINISH روی شیشه را اسکن کنید</p>
+</div>
+
+<div class="error" id="homeError"></div>
+</section>
+
+<section id="name" class="card hidden">
+<h1 class="h1">ثبت سفیر جدید</h1>
+<p class="sub">نام و نام خانوادگی را وارد کنید.</p>
+
+<div class="field">
+<label>نام و نام خانوادگی</label>
+<input id="fullName" autocomplete="name">
+</div>
+
+<div class="actions">
+<button class="primary" onclick="nextName()">ادامه</button>
+</div>
+
+<div class="error" id="nameError"></div>
+<button class="secondary back" onclick="go('home')">بازگشت به صفحه اصلی</button>
+</section>
+
+<section id="phone" class="card hidden">
+<h1 class="h1">شماره تماس</h1>
+
+<div class="field">
+<label>شماره همراه</label>
+<input id="phoneInput" inputmode="numeric" maxlength="11" placeholder="09xxxxxxxxx">
+</div>
+
+<div class="actions">
+<button class="primary" onclick="nextPhone()">ادامه</button>
+<button class="secondary" onclick="go('name')">مرحله قبل</button>
+</div>
+
+<div class="error" id="phoneError"></div>
+<button class="secondary back" onclick="go('home')">بازگشت به صفحه اصلی</button>
+</section>
+
+<section id="national" class="card hidden">
+<h1 class="h1">کد ملی</h1>
+
+<div class="field">
+<label>کد ملی ده‌رقمی</label>
+<input id="nationalInput" inputmode="numeric" maxlength="10">
+</div>
+
+<div class="actions">
+<button class="primary" id="nationalBtn" onclick="startRegistrationCamera()">ادامه و فعال‌سازی دوربین</button>
+<button class="secondary" onclick="go('phone')">مرحله قبل</button>
+</div>
+
+<div class="error" id="nationalError"></div>
+<button class="secondary back" onclick="go('home')">بازگشت به صفحه اصلی</button>
+</section>
+
+<section id="photos" class="card hidden">
+<div class="sub" id="photoStep">تصویر ۱ از ۳</div>
+<h1 class="h1">ثبت تصاویر سفیر</h1>
+<p class="sub" id="photoGuide">روبروی دوربین بایستید.</p>
+
+<div class="dots">
+<i class="dot" id="d1"></i>
+<i class="dot" id="d2"></i>
+<i class="dot" id="d3"></i>
+</div>
+
+<div class="camera">
+<video id="video" autoplay playsinline muted></video>
+<div class="cameraHint" id="camHint">در حال آماده‌سازی دوربین…</div>
+</div>
+
+<div class="notice" id="photoStatus"></div>
+<div class="error" id="photoError"></div>
+
+<button class="primary" id="captureBtn" onclick="capturePhoto()">گرفتن تصویر</button>
+<button class="secondary back" onclick="backHomeAndStop()">بازگشت به صفحه اصلی</button>
+</section>
+
+<section id="success" class="card hidden">
+<div class="result">✓ ثبت سفیر با موفقیت انجام شد</div>
+<p id="successName" class="sub"></p>
+<p class="sub">از این پس با نشان دادن چهره، سفارش‌ها به نام ایشان ثبت می‌شود.</p>
+<button class="primary" onclick="resetToHome()">بازگشت به صفحه اصلی</button>
+</section>
+
+<section id="identify" class="card hidden">
+<h1 class="h1">شناسایی سفیر</h1>
+<p class="sub" id="idGuide">روبروی دوربین بایستید…</p>
+
+<div class="camera">
+<video id="idVideo" autoplay playsinline muted></video>
+<div class="cameraHint" id="idHint">در حال آماده‌سازی…</div>
+</div>
+
+<div class="notice" id="idStatus"></div>
+<div class="error" id="identifyError"></div>
+
+<div class="actions hidden" id="idActions">
+<button class="primary" onclick="startIdentify()">تلاش مجدد</button>
+</div>
+
+<button class="secondary back" onclick="cancelIdentify()">بازگشت و ادامه اسکن</button>
+</section>
+
+<footer class="small">
+اطلاعات و تصاویر در گوگل‌شیت و گوگل‌درایو مالک سامانه ذخیره می‌شوند.
+عکس‌ها خصوصی می‌مانند و فقط لینک آن‌ها در شیت ثبت می‌شود.
+</footer>
+
+</div>
+</main>
+
+<script>
+/* ===== فقط همین خط را عوض کن: آدرس Web app که از Apps Script کپی کردی ===== */
+const API_URL = 'https://script.google.com/macros/s/AKfycbzsZDK5TC6444svPdceC4SWZkxbbPSAYF1fuh0OCPTipn7bzVzbyjx7n0mso_bO4Yve/exec';
+/* ======================================================================== */
+
+const $ = id => document.getElementById(id);
+
+const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model/';
+const MATCH_THRESHOLD = 0.5;      // کمتر = سخت‌گیرتر
+const MATCH_MARGIN = 0.05;        // فاصله لازم بین نزدیک‌ترین و دومین سفیر
+const DUPLICATE_THRESHOLD = 0.4;  // جلوگیری از ثبت یک چهره برای دو نفر
+const SAME_PERSON_MAX = 0.6;      // سه عکس ثبت‌نام باید مال یک نفر باشد
+const CONFIRM_FRAMES = 3;         // تعداد تأیید پشت‌سرهم
+const IDENTIFY_TIMEOUT = 25000;   // میلی‌ثانیه
+const TOKEN_KEY = 'safirToken';
+
+let orders = [];
+let photos = [];
+let descriptors = [];
+let regStream = null;
+let idStream = null;
+let idToken = 0;
+let fullName = '';
+let phone = '';
+let nationalId = '';
+let db = [];
+let enginePromise = null;
+
+const ids = ['login','home','name','phone','national','photos','success','identify'];
+
+function go(id) {
+  ids.forEach(x =>
+    $(x).classList.toggle('hidden', x !== id)
+  );
+
+  if (id === 'home') {
+    setTimeout(() => $('orderInput').focus(), 100);
+  }
+
+  if (id === 'login') {
+    setTimeout(() => $('passInput').focus(), 100);
+  }
+}
+
+function norm(v) {
+  return String(v)
+    .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+    .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+    .replace(/\s/g, '');
+}
+
+function fa(n) {
+  return new Intl.NumberFormat('fa-IR').format(n);
+}
+
+function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+function stopStream(s) {
+  if (s) s.getTracks().forEach(t => t.stop());
+}
+
+function validNationalId(s) {
+  if (!/^\d{10}$/.test(s) || /^(\d)\1{9}$/.test(s)) return false;
+  let sum = 0;
+  for (let i = 0; i < 9; i++) sum += Number(s[i]) * (10 - i);
+  const r = sum % 11;
+  const c = Number(s[9]);
+  return r < 2 ? c === r : c === 11 - r;
+}
+
+function isLoggedIn() {
+  try {
+    return !!localStorage.getItem(TOKEN_KEY);
+  } catch (e) {
+    return false;
+  }
+}
+
+/* ---------- ارتباط با Apps Script ---------- */
+
+async function api(action, data) {
+  let token = '';
+  try { token = localStorage.getItem(TOKEN_KEY) || ''; } catch (e) {}
+
+  let res;
+  try {
+    res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: action, token: token, data: data || {} })
+    });
+  } catch (e) {
+    throw new Error('ارتباط با سرور برقرار نشد. اینترنت و آدرس API را بررسی کنید.');
+  }
+
+  let j;
+  try {
+    j = await res.json();
+  } catch (e) {
+    throw new Error('پاسخ سرور معتبر نیست. Deploy و دسترسی Anyone را بررسی کنید.');
+  }
+
+  if (!j.ok) {
+    if (j.code === 'AUTH') {
+      forceLogout('نشست منقضی شده است؛ دوباره وارد شوید.');
+    }
+    throw new Error(j.error || 'خطای ناشناخته');
+  }
+
+  return j.result;
+}
+
+/* ---------- ورود و خروج ---------- */
+
+async function doLogin() {
+  const pass = $('passInput').value;
+  if (!pass) {
+    $('loginError').textContent = 'رمز را وارد کنید.';
+    return;
+  }
+
+  $('loginBtn').disabled = true;
+  $('loginError').textContent = 'در حال بررسی…';
+
+  try {
+    const r = await api('login', { password: pass });
+
+    try { localStorage.setItem(TOKEN_KEY, r.token); } catch (e) {
+      throw new Error('مرورگر اجازه ذخیره ورود را نمی‌دهد.');
+    }
+
+    $('passInput').value = '';
+    $('loginError').textContent = '';
+    showApp();
+
+  } catch (e) {
+    $('loginError').textContent = e.message;
+  } finally {
+    $('loginBtn').disabled = false;
+  }
+}
+
+$('passInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+function showApp() {
+  $('logoutBtn').classList.remove('hidden');
+  go('home');
+  ensureEngine().catch(() => {});
+}
+
+function forceLogout(msg) {
+  try { localStorage.removeItem(TOKEN_KEY); } catch (e) {}
+
+  idToken++;
+  stopStream(idStream); idStream = null;
+  stopStream(regStream); regStream = null;
+
+  db = [];
+  enginePromise = null;
+
+  $('logoutBtn').classList.add('hidden');
+  setEngine('loading', 'در انتظار ورود');
+  $('loginError').textContent = msg || '';
+  go('login');
+}
+
+async function logout() {
+  if (orders.length && !confirm('سفارش‌های ثبت‌نشده پاک می‌شوند. خروج انجام شود؟')) {
+    return;
+  }
+
+  try { await api('logout'); } catch (e) {}
+
+  orders = [];
+  renderOrders();
+  forceLogout('');
+}
+
+/* ---------- موتور تشخیص چهره ---------- */
+
+function setEngine(state, text) {
+  const el = $('engineStatus');
+  el.className = 'status' +
+    (state === 'loading' ? ' st-load' : state === 'error' ? ' st-bad' : '');
+  el.textContent = text;
+}
+
+function detectorOptions() {
+  return new faceapi.SsdMobilenetv1Options({ minConfidence: 0.6 });
+}
+
+async function refreshDatabase() {
+  const res = await api('getAppData');
+
+  db = (res.couriers || []).map(c => ({
+    code: c.code,
+    name: c.name,
+    descriptors: c.descriptors.map(d => Float32Array.from(d))
+  }));
+}
+
+function ensureEngine() {
+  if (!enginePromise) {
+    enginePromise = (async () => {
+      setEngine('loading', 'در حال آماده‌سازی تشخیص چهره…');
+
+      if (typeof faceapi === 'undefined') {
+        throw new Error('کتابخانه تشخیص چهره بارگذاری نشد. اینترنت را بررسی کنید.');
+      }
+
+      await Promise.all([
+        faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
+        faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+        faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+      ]);
+
+      await refreshDatabase();
+      setEngine('ready', 'تشخیص چهره آماده است');
+    })().catch(e => {
+      enginePromise = null;
+      if (isLoggedIn()) setEngine('error', 'خطا در آماده‌سازی؛ تلاش مجدد خودکار');
+      throw e;
+    });
+  }
+
+  return enginePromise;
+}
+
+function matchFace(desc) {
+  let best = null;
+  let second = Infinity;
+
+  for (const c of db) {
+    let d = Infinity;
+    for (const r of c.descriptors) {
+      const x = faceapi.euclideanDistance(desc, r);
+      if (x < d) d = x;
+    }
+
+    if (!best || d < best.distance) {
+      if (best) second = best.distance;
+      best = { courier: c, distance: d };
+    } else if (d < second) {
+      second = d;
+    }
+  }
+
+  return { best, second };
+}
+
+/* ---------- اسکن سفارش‌ها ---------- */
+
+function addOrder() {
+  const v = $('orderInput').value.trim();
+  if (!v) return;
+
+  if (v.toUpperCase() === 'FINISH') {
+    if (!orders.length) {
+      $('homeError').textContent = 'هنوز سفارشی اسکن نشده است.';
+      $('orderInput').value = '';
+      return;
+    }
+
+    $('homeError').textContent = '';
+    $('orderInput').value = '';
+    startIdentify();
+    return;
+  }
+
+  $('homeError').textContent = '';
+
+  if (!orders.includes(v)) {
+    orders.push(v);
+    renderOrders();
+  }
+
+  $('orderInput').value = '';
+  $('orderInput').focus();
+}
+
+$('orderInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    addOrder();
+  }
+});
+
+function renderOrders() {
+  $('count').textContent = fa(orders.length);
+  $('orderList').innerHTML = '';
+
+  orders.forEach((v, i) => {
+    const row = document.createElement('div');
+    row.className = 'order';
+
+    const s = String(v);
+    const text = document.createElement('div');
+    const a = document.createElement('span');
+    const b = document.createElement('strong');
+
+    a.textContent = s.slice(0, -4);
+    b.className = 'last4';
+    b.textContent = s.slice(-4);
+    text.append(a, b);
+
+    const rm = document.createElement('button');
+    rm.className = 'rm';
+    rm.textContent = '✕';
+    rm.title = 'حذف این سفارش';
+    rm.onclick = () => {
+      orders.splice(i, 1);
+      renderOrders();
+      $('orderInput').focus();
+    };
+
+    row.append(text, rm);
+    $('orderList').append(row);
+  });
+}
+
+/* ---------- تحویل با تشخیص چهره ---------- */
+
+async function startIdentify() {
+  const token = ++idToken;
+
+  go('identify');
+  $('idGuide').className = 'sub';
+  $('idGuide').textContent = 'روبروی دوربین بایستید…';
+  $('idStatus').textContent = '';
+  $('identifyError').textContent = '';
+  $('idActions').classList.add('hidden');
+  $('idHint').classList.remove('hidden');
+  $('idHint').textContent = 'در حال آماده‌سازی…';
+
+  try {
+    await ensureEngine();
+    if (token !== idToken) return;
+
+    // لیست جدید سفیرها (مثلاً سفیر تازه ثبت‌شده روی دستگاه دیگر)
+    await refreshDatabase();
+    if (token !== idToken) return;
+
+    if (!db.length) {
+      throw new Error('هنوز هیچ سفیری با چهره ثبت نشده است.');
+    }
+
+    if (!navigator.mediaDevices?.getUserMedia) {
+      throw new Error('دوربین در دسترس نیست.');
+    }
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+      audio: false
+    });
+
+    if (token !== idToken) {
+      stopStream(stream);
+      return;
+    }
+
+    idStream = stream;
+    $('idVideo').srcObject = stream;
+    $('idHint').classList.add('hidden');
+    $('idStatus').textContent = 'در حال جستجوی چهره…';
+
+    identifyLoop(token);
+
+  } catch (e) {
+    if (token === idToken) idFail(cameraMessage(e));
+  }
+}
+
+function cameraMessage(e) {
+  if (e && e.name === 'NotAllowedError') return 'اجازه دسترسی به دوربین داده نشده است.';
+  if (e && e.name === 'NotFoundError') return 'دوربین پیدا نشد.';
+  if (e && e.name === 'NotReadableError') return 'دوربین توسط برنامه دیگری در حال استفاده است.';
+  return (e && e.message) || 'خطا در راه‌اندازی تشخیص چهره.';
+}
+
+async function identifyLoop(token) {
+  const video = $('idVideo');
+  const started = Date.now();
+  let cand = null;
+  let streak = 0;
+  let dsum = 0;
+
+  while (token === idToken) {
+    if (Date.now() - started > IDENTIFY_TIMEOUT) {
+      idFail('چهره شناسایی نشد. نور و فاصله را بررسی کنید و دوباره تلاش کنید.');
+      return;
+    }
+
+    if (video.readyState >= 2 && video.videoWidth) {
+      let det = null;
+
+      try {
+        det = await faceapi
+          .detectSingleFace(video, detectorOptions())
+          .withFaceLandmarks()
+          .withFaceDescriptor();
+      } catch (e) {
+        if (token === idToken) idFail('خطا در پردازش تصویر دوربین.');
+        return;
+      }
+
+      if (token !== idToken) return;
+
+      if (!det) {
+        cand = null;
+        streak = 0;
+        $('idStatus').textContent = 'چهره‌ای دیده نمی‌شود؛ روبروی دوربین بایستید.';
+      } else {
+        const { best, second } = matchFace(det.descriptor);
+
+        const ok =
+          best &&
+          best.distance <= MATCH_THRESHOLD &&
+          (second - best.distance) >= MATCH_MARGIN;
+
+        if (ok) {
+          if (cand === best.courier.code) {
+            streak++;
+            dsum += best.distance;
+          } else {
+            cand = best.courier.code;
+            streak = 1;
+            dsum = best.distance;
+          }
+
+          $('idStatus').textContent = 'در حال تأیید…';
+
+          if (streak >= CONFIRM_FRAMES) {
+            idToken++;
+            finishHandoff(best.courier, dsum / streak);
+            return;
+          }
+        } else {
+          cand = null;
+          streak = 0;
+          $('idStatus').textContent = 'در حال بررسی چهره…';
+        }
+      }
+    }
+
+    await sleep(300);
+  }
+}
+
+function stopIdStream() {
+  stopStream(idStream);
+  idStream = null;
+  $('idVideo').srcObject = null;
+}
+
+function idFail(msg) {
+  idToken++;
+  stopIdStream();
+  $('idHint').classList.remove('hidden');
+  $('idHint').textContent = 'دوربین خاموش شد';
+  $('idStatus').textContent = '';
+  $('identifyError').textContent = msg;
+  $('idActions').classList.remove('hidden');
+}
+
+function cancelIdentify() {
+  idToken++;
+  stopIdStream();
+  go('home');
+}
+
+async function finishHandoff(courier, distance) {
+  stopIdStream();
+
+  $('idHint').classList.remove('hidden');
+  $('idHint').textContent = '✓ ' + courier.name;
+  $('idGuide').textContent = 'سفیر شناسایی شد: ' + courier.name;
+  $('idStatus').textContent = 'در حال ثبت سفارش‌ها…';
+  $('identifyError').textContent = '';
+
+  const token = idToken;
+
+  try {
+    const res = await api('saveHandoff', {
+      courierCode: courier.code,
+      orders: orders,
+      method: 'تشخیص چهره',
+      matchDistance: distance
+    });
+
+    let msg = `✓ ${fa(res.saved)} سفارش برای ${res.courierName} ثبت شد.`;
+
+    if (res.duplicates && res.duplicates.length) {
+      msg += ` (${fa(res.duplicates.length)} سفارش تکراری ثبت نشد)`;
+    }
+
+    if (res.saved === 0) {
+      msg = 'همه این سفارش‌ها قبلاً ثبت شده بودند.';
+    }
+
+    $('idGuide').className = 'result';
+    $('idGuide').textContent = msg;
+    $('idStatus').textContent = '';
+
+    orders = [];
+    renderOrders();
+
+    setTimeout(() => {
+      if (token === idToken && isLoggedIn()) go('home');
+    }, 2500);
+
+  } catch (e) {
+    if (isLoggedIn()) idFail(e.message || String(e));
+  }
+}
+
+/* ---------- ثبت سفیر جدید ---------- */
+
+function startRegistration() {
+  $('fullName').value = '';
+  $('phoneInput').value = '';
+  $('nationalInput').value = '';
+  go('name');
+}
+
+function nextName() {
+  fullName = $('fullName').value.trim().replace(/\s+/g, ' ');
+
+  if (fullName.split(' ').length < 2) {
+    $('nameError').textContent = 'نام و نام خانوادگی را کامل وارد کنید.';
+    return;
+  }
+
+  $('nameError').textContent = '';
+  go('phone');
+}
+
+function nextPhone() {
+  phone = norm($('phoneInput').value);
+
+  if (!/^09\d{9}$/.test(phone)) {
+    $('phoneError').textContent = 'شماره باید ۱۱ رقم و با ۰۹ شروع شود.';
+    return;
+  }
+
+  $('phoneError').textContent = '';
+  go('national');
+}
+
+async function startRegistrationCamera() {
+  nationalId = norm($('nationalInput').value);
+
+  if (!validNationalId(nationalId)) {
+    $('nationalError').textContent = 'کد ملی معتبر نیست.';
+    return;
+  }
+
+  $('nationalError').textContent = 'در حال آماده‌سازی…';
+  $('nationalBtn').disabled = true;
+
+  try {
+    await ensureEngine();
+
+    if (!navigator.mediaDevices?.getUserMedia) {
+      throw new Error('دوربین در دسترس نیست.');
+    }
+
+    regStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
+      audio: false
+    });
+
+    $('video').srcObject = regStream;
+    $('camHint').classList.add('hidden');
+
+    photos = [];
+    descriptors = [];
+    $('photoStatus').textContent = '';
+    $('photoError').textContent = '';
+    $('captureBtn').disabled = false;
+    updatePhotoStep();
+
+    $('nationalError').textContent = '';
+    go('photos');
+
+  } catch (e) {
+    $('nationalError').textContent = cameraMessage(e);
+  } finally {
+    $('nationalBtn').disabled = false;
+  }
+}
+
+function updatePhotoStep() {
+  const n = Math.min(photos.length, 2);
+
+  $('photoStep').textContent = `تصویر ${fa(n + 1)} از ۳`;
+
+  $('photoGuide').textContent = [
+    'مستقیم به دوربین نگاه کنید.',
+    'کمی صورت را به سمت راست بچرخانید.',
+    'کمی صورت را به سمت چپ بچرخانید.'
+  ][n];
+
+  for (let i = 1; i <= 3; i++) {
+    $('d' + i).classList.toggle('done', i <= photos.length);
+  }
+
+  $('captureBtn').textContent = 'ثبت تصویر ' + ['اول', 'دوم', 'سوم'][n];
+}
+
+async function capturePhoto() {
+  const v = $('video');
+
+  if (!v.videoWidth) {
+    $('photoError').textContent = 'تصویر دوربین آماده نیست.';
+    return;
+  }
+
+  $('captureBtn').disabled = true;
+  $('photoError').textContent = '';
+  $('photoStatus').textContent = 'در حال بررسی چهره…';
+
+  try {
+    const det = await faceapi
+      .detectSingleFace(v, detectorOptions())
+      .withFaceLandmarks()
+      .withFaceDescriptor();
+
+    if (!det) {
+      throw new Error('چهره‌ای دیده نشد. روبروی دوربین و در نور کافی بایستید.');
+    }
+
+    if (det.detection.box.width < v.videoWidth * 0.18) {
+      throw new Error('کمی به دوربین نزدیک‌تر شوید.');
+    }
+
+    if (descriptors.length === 0 && db.length) {
+      const { best } = matchFace(det.descriptor);
+      if (best && best.distance < DUPLICATE_THRESHOLD) {
+        throw new Error('این چهره قبلاً برای «' + best.courier.name + '» ثبت شده است.');
+      }
+    }
+
+    if (descriptors.length > 0) {
+      const d = faceapi.euclideanDistance(det.descriptor, descriptors[0]);
+      if (d > SAME_PERSON_MAX) {
+        throw new Error('چهره با تصویر اول یکسان نیست. فقط یک نفر مقابل دوربین باشد.');
+      }
+    }
+
+    const c = document.createElement('canvas');
+    const scale = Math.min(1, 960 / v.videoWidth);
+    c.width = Math.round(v.videoWidth * scale);
+    c.height = Math.round(v.videoHeight * scale);
+    c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
+
+    photos.push(c.toDataURL('image/jpeg', .78));
+    descriptors.push(det.descriptor);
+
+  } catch (e) {
+    $('photoError').textContent = e.message || 'خطا در پردازش تصویر.';
+    $('photoStatus').textContent = '';
+    $('captureBtn').disabled = false;
+    return;
+  }
+
+  if (photos.length < 3) {
+    updatePhotoStep();
+    $('photoStatus').textContent = 'تصویر دریافت شد؛ زاویه بعدی را تغییر دهید.';
+    $('captureBtn').disabled = false;
+    return;
+  }
+
+  $('photoStatus').textContent = 'در حال ذخیره اطلاعات و تصاویر در گوگل…';
+  updatePhotoStep();
+
+  const payloadDescriptors = descriptors.map(d =>
+    Array.from(d, x => Math.round(x * 1e5) / 1e5)
+  );
+
+  try {
+    const res = await api('registerCourier', {
+      fullName: fullName,
+      phone: phone,
+      nationalId: nationalId,
+      photos: photos,
+      descriptors: payloadDescriptors
+    });
+
+    stopRegCamera();
+    refreshDatabase().catch(() => {});
+
+    $('successName').textContent = res.name + ' عزیز';
+    $('photoStatus').textContent = '';
+    $('captureBtn').disabled = false;
+
+    go('success');
+
+  } catch (e) {
+    if (!isLoggedIn()) return;
+
+    $('photoError').textContent = e.message || String(e);
+    $('photoStatus').textContent = '';
+
+    // ثبت ناموفق بود؛ از اول عکس‌ها را بگیریم
+    photos = [];
+    descriptors = [];
+    updatePhotoStep();
+    $('captureBtn').disabled = false;
+  }
+}
+
+function stopRegCamera() {
+  stopStream(regStream);
+  regStream = null;
+  $('video').srcObject = null;
+  $('camHint').classList.remove('hidden');
+}
+
+function backHomeAndStop() {
+  stopRegCamera();
+  go('home');
+}
+
+function resetToHome() {
+  fullName = '';
+  phone = '';
+  nationalId = '';
+  photos = [];
+  descriptors = [];
+
+  ['fullName', 'phoneInput', 'nationalInput'].forEach(x => $(x).value = '');
+
+  go('home');
+}
+
+/* ---------- نگهداری فوکوس اسکنر و تازه‌سازی ---------- */
+
+document.addEventListener('click', e => {
+  if (!$('home').classList.contains('hidden') && !e.target.closest('button')) {
+    $('orderInput').focus();
+  }
+});
+
+setInterval(() => {
+  if (!$('home').classList.contains('hidden') &&
+      document.activeElement === document.body) {
+    $('orderInput').focus();
+  }
+}, 1000);
+
+// اگر بارگذاری موتور شکست خورد، خودکار دوباره تلاش می‌کند
+setInterval(() => {
+  if (isLoggedIn() && !enginePromise) ensureEngine().catch(() => {});
+}, 15000);
+
+// لیست چهره سفیرها هر ۲ دقیقه (وقتی در صفحه اصلی هستیم) به‌روز می‌شود
+setInterval(() => {
+  if (isLoggedIn() && enginePromise && !$('home').classList.contains('hidden')) {
+    refreshDatabase().catch(() => {});
+  }
+}, 120000);
+
+/* ---------- شروع ---------- */
+
+renderOrders();
+
+(async function boot() {
+  if (API_URL.indexOf('PASTE_') === 0) {
+    $('loginError').textContent = 'آدرس API هنوز در index.html تنظیم نشده است.';
+    go('login');
+    return;
+  }
+
+  if (!isLoggedIn()) {
+    go('login');
+    return;
+  }
+
+  try {
+    await api('ping');
+    showApp();
+  } catch (e) {
+    // اگر نشست منقضی بوده باشد api خودش به صفحه ورود می‌برد
+    if (isLoggedIn()) {
+      $('loginError').textContent = e.message;
+      go('login');
+    }
+  }
+})();
+</script>
+</body>
+</html>
