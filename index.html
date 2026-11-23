@@ -27,7 +27,11 @@ color:var(--ink);
 font-family:Tahoma,Arial,sans-serif
 }
 .shell{min-height:100vh;padding:22px 14px 40px}
+body.onHome .shell{padding:10px 14px 0;min-height:0}
+body.onHome .header{margin-bottom:10px}
+body.onHome .small{display:none}
 .wrap{max-width:1320px;margin:auto}
+.wrap.wide{max-width:1800px}
 .narrow{max-width:900px;margin-left:auto;margin-right:auto}
 .header{
 display:flex;
@@ -65,6 +69,7 @@ color:var(--navy);
 margin:0 0 10px;
 font-weight:900
 }
+.h1.compact{font-size:28px;line-height:1.4;margin:0 0 8px}
 .sub{
 font-size:17px;
 color:var(--muted);
@@ -103,63 +108,18 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .secondary{background:#edf2f8;color:#38506b}
 .scanbox{
 max-width:680px;
-margin:20px auto;
+margin:12px auto 0;
 display:flex;
-gap:10px
+gap:10px;
+width:100%
 }
-.count{
-font-size:22px;
-font-weight:900;
-color:var(--navy);
-margin:20px
-}
-.orders{max-width:680px;margin:auto;text-align:right}
-.order{
-direction:ltr;
-display:flex;
-align-items:center;
-justify-content:space-between;
-padding:10px 12px;
-border-bottom:1px solid var(--line);
-font-size:24px;
-font-weight:900
-}
-.last4{
-font-size:31px;
-color:#0d55b5;
-background:#eaf2ff;
-border:2px solid #c9ddfb;
-border-radius:9px;
-padding:2px 9px;
-margin-right:5px
-}
-.rm{
-background:#fdeaea;
-color:var(--red);
-padding:6px 12px;
-font-size:18px;
-border-radius:10px
-}
-.finish{
-margin:28px auto 5px;
-padding:22px;
-background:#fff8e9;
-border:2px dashed #edbd62;
-border-radius:20px;
-max-width:800px
-}
-.finish strong{
-display:inline-block;
-font-size:clamp(30px,5vw,44px);
-color:#754500;
-letter-spacing:2px
-}
-.finish p{
-font-size:clamp(20px,3.5vw,29px);
-font-weight:900;
-color:#855a16;
-margin:8px 0
-}
+.scanbox input{padding:14px;font-size:20px}
+.scanbox button{padding:12px 18px}
+.error{color:var(--red);line-height:2;margin:12px}
+.small{font-size:13px;color:#8290a1;line-height:2;margin-top:18px}
+.back{margin-top:18px}
+.notice{font-weight:900;color:var(--green);line-height:2;margin:14px}
+.result{font-size:26px;font-weight:900;color:var(--green);line-height:2;margin-bottom:22px}
 .camera{
 width:min(100%,680px);
 aspect-ratio:16/9;
@@ -187,128 +147,228 @@ line-height:2
 .dots{display:flex;gap:10px;justify-content:center;margin:18px}
 .dot{width:14px;height:14px;background:#dce5ef;border-radius:50%}
 .dot.done{background:var(--green)}
-.notice{font-weight:900;color:var(--green);line-height:2;margin:14px}
-.error{color:var(--red);line-height:2;margin:12px}
-.small{font-size:13px;color:#8290a1;line-height:2;margin-top:18px}
-.back{margin-top:18px}
-.result{font-size:26px;font-weight:900;color:var(--green);line-height:2;margin-bottom:22px}
 
-/* ----- صفحه اصلی: کادر اسکن (راست) + کادر آبی (چپ) ----- */
+/* ----- صفحه اصلی: اندازه کامل مانیتور، بدون اسکرول ----- */
 .homeGrid{
 display:grid;
-grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);
-gap:18px;
-align-items:start
+grid-template-columns:minmax(340px,.85fr) minmax(0,1.6fr);
+gap:14px;
+height:calc(100vh - 78px);
+min-height:560px;
+align-items:stretch
 }
+.scanCard{
+display:flex;
+flex-direction:column;
+min-height:0;
+padding:16px 18px
+}
+.countRow{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+margin:12px 0 0
+}
+.count{font-size:20px;font-weight:900;color:var(--navy)}
+.countRow button{padding:10px 14px;font-size:14px}
+.orders{
+flex:1;
+min-height:0;
+overflow-y:auto;
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+gap:6px;
+align-content:start;
+margin-top:10px;
+text-align:right
+}
+.order{
+direction:ltr;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:6px;
+padding:5px 8px;
+border:2px solid var(--line);
+border-radius:12px;
+font-size:18px;
+font-weight:900;
+background:#fbfdff
+}
+.last4{
+font-size:22px;
+color:#0d55b5;
+background:#eaf2ff;
+border:2px solid #c9ddfb;
+border-radius:8px;
+padding:0 7px;
+margin-right:4px
+}
+.rm{
+background:#fdeaea;
+color:var(--red);
+padding:4px 10px;
+font-size:16px;
+border-radius:10px
+}
+.finish{
+margin:10px 0 0;
+padding:10px 14px;
+background:#fff8e9;
+border:2px dashed #edbd62;
+border-radius:18px
+}
+.finish strong{
+display:inline-block;
+font-size:30px;
+color:#754500;
+letter-spacing:2px
+}
+.finish p{
+font-size:17px;
+font-weight:900;
+color:#855a16;
+margin:2px 0 0
+}
+.scanCard .error{margin:6px 0 0;line-height:1.6;min-height:20px}
+
 .blueCard{
 border:3px solid var(--blue);
 background:#f4f8ff;
 border-radius:24px;
-padding:18px 14px;
-text-align:center
+padding:12px 14px;
+text-align:center;
+display:flex;
+flex-direction:column;
+min-height:0
 }
 .blueTitle{
-font-size:26px;
+font-size:28px;
 font-weight:900;
 color:#0d55b5;
-margin:0 0 4px
+margin:0 0 2px
 }
-.blueSub{font-size:14px;color:var(--muted);margin:0 0 10px;line-height:1.9}
-.shelfHead,.shelfRow{
-display:grid;
-grid-template-columns:78px minmax(0,1.2fr) minmax(0,1.2fr) 96px;
-gap:8px;
-align-items:center
-}
-.shelfHead{
-font-size:13px;
-font-weight:900;
-color:#38506b;
-padding:6px 8px;
-border-bottom:2px solid #c9ddfb
-}
+.blueSub{font-size:14px;color:var(--muted);margin:0 0 8px;line-height:1.7}
 .shelfBox{
-max-height:68vh;
+flex:1;
+min-height:0;
 overflow-y:auto;
+display:grid;
+gap:12px;
+align-items:start;
 text-align:right
 }
+.shelfCol{display:flex;flex-direction:column;min-width:0}
+.shelfHead{
+height:34px;
+display:grid;
+align-items:center;
+gap:8px;
+font-size:12px;
+font-weight:900;
+color:#38506b;
+padding:0 8px;
+border-bottom:2px solid #c9ddfb
+}
 .shelfRow{
-padding:8px;
+display:grid;
+align-items:center;
+gap:8px;
+padding:0 8px;
 border-bottom:1px solid #dbe6f7;
 border-right:6px solid #7fb0ec;
 background:white;
-font-weight:900
+font-weight:900;
+overflow:hidden
 }
 .shelfRow.groupStart{border-top:3px solid #9bbbe6}
 .shelfRow.warn{background:#fff6cf;border-right-color:#e0a800}
 .shelfRow.bad{background:#fde3e3;border-right-color:#c0392b}
 .shelfRow.alsoMine{outline:3px solid #e67e00;outline-offset:-3px}
 .regalPill{
-font-size:32px;
-line-height:1.1;
 text-align:center;
 color:white;
 background:var(--blue);
-border-radius:12px;
-padding:4px 0
+border-radius:10px;
+line-height:1.25
 }
-.sName{font-size:18px;color:var(--navy);overflow-wrap:anywhere}
+.sName{color:var(--navy);overflow-wrap:anywhere}
 .sName small{
 display:inline-block;
-font-size:12px;
+font-size:11px;
 color:#0d55b5;
 background:#eaf2ff;
 border-radius:8px;
-padding:1px 7px;
+padding:0 6px;
 margin-right:4px
 }
 .sName .none{color:#a3b0bf;font-weight:400}
-.sCode{
-direction:ltr;
-text-align:right;
-font-size:17px;
-color:#38506b
-}
+.sCode{direction:ltr;text-align:right;color:#38506b}
 .sCode b{
-font-size:22px;
 color:#0d55b5;
 background:#eaf2ff;
 border:2px solid #c9ddfb;
-border-radius:8px;
-padding:0 6px;
+border-radius:7px;
+padding:0 5px;
 margin-right:3px
 }
 .sMin{
 text-align:center;
-font-size:17px;
 border-radius:10px;
-padding:6px 2px;
+padding:5px 2px;
 background:#e9f6ee;
 color:#15753f
 }
 .warn .sMin{background:#ffe9a3;color:#7a5200}
 .bad .sMin{background:#f6b8b8;color:#8f1d1d}
-.shelfEmpty{padding:28px 10px;color:var(--muted);line-height:2}
-.shelfNote{color:#b35c00;font-weight:900;font-size:13px;margin:8px 0 0;min-height:18px}
+.sMid{display:flex;flex-direction:column;justify-content:center;min-width:0}
+
+/* تراکم ۱: کم‌سفارش، درشت */
+.d1 .shelfHead,.d1 .shelfRow{grid-template-columns:78px minmax(0,1.2fr) minmax(0,1.2fr) 118px}
+.d1 .shelfRow{height:74px}
+.d1 .regalPill{font-size:34px}
+.d1 .sName{font-size:21px}
+.d1 .sCode{font-size:18px}
+.d1 .sCode b{font-size:24px}
+.d1 .sMin{font-size:18px}
+/* تراکم ۲: دو ستون */
+.d2 .shelfHead,.d2 .shelfRow{grid-template-columns:60px minmax(0,1fr) minmax(0,1.1fr) 88px}
+.d2 .shelfRow{height:60px}
+.d2 .regalPill{font-size:28px}
+.d2 .sName{font-size:17px}
+.d2 .sCode{font-size:15px}
+.d2 .sCode b{font-size:19px}
+.d2 .sMin{font-size:15px}
+/* تراکم ۳: سه ستون فشرده */
+.d3 .shelfHead,.d3 .shelfRow{grid-template-columns:48px minmax(0,1fr) 66px}
+.d3 .shelfRow{height:50px}
+.d3 .regalPill{font-size:24px}
+.d3 .sName{font-size:14px;line-height:1.3}
+.d3 .sCode{font-size:13px;line-height:1.3}
+.d3 .sCode b{font-size:16px}
+.d3 .sMin{font-size:13px}
+
+.shelfEmpty{padding:28px 10px;color:var(--muted);line-height:2;text-align:center}
+.shelfNote{color:#b35c00;font-weight:900;font-size:13px;margin:6px 0 0;min-height:18px}
+.blueCard .error{margin:2px 0 0;line-height:1.5}
+
 @media(max-width:1000px){
-.homeGrid{grid-template-columns:1fr}
+.homeGrid{grid-template-columns:1fr;height:auto}
+.shelfBox{height:60vh;flex:none}
+.orders{max-height:30vh;flex:none}
 }
 @media(max-width:600px){
 .scanbox{flex-direction:column}
 .scanbox button{width:100%}
 .card{padding:22px 14px}
-.order{font-size:20px}
-.last4{font-size:25px}
-.shelfHead,.shelfRow{grid-template-columns:56px minmax(0,1fr) minmax(0,1fr) 70px}
-.regalPill{font-size:24px}
-.sName{font-size:15px}
 }
 </style>
 </head>
 
 <body>
 <main class="shell">
-<div class="wrap">
+<div class="wrap" id="wrap">
 
 <header class="header">
 <div class="brand">✓ سامانه ثبت و تحویل سفیران</div>
@@ -336,25 +396,17 @@ color:#15753f
 
 <section id="home" class="homeGrid hidden">
 
-<div class="card">
-<h1 class="h1">ثبت و تحویل سفارش</h1>
-<p class="sub">
-بارکد سفارش‌ها را اسکن کنید؛ برای پایان نوبت، بارکد FINISH را اسکن کنید.
-</p>
-
-<div class="toolbar">
-<button class="secondary" onclick="startRegistration()">
-＋ ثبت سفیر جدید
-</button>
-</div>
+<div class="card scanCard">
+<h1 class="h1 compact">ثبت و تحویل سفارش</h1>
 
 <div class="scanbox">
 <input id="orderInput" autocomplete="off" placeholder="اسکن بارکد سفارش">
 <button class="primary" onclick="addOrder()">افزودن سفارش</button>
 </div>
 
-<div class="count">
-تعداد سفارش‌ها: <span id="count">۰</span>
+<div class="countRow">
+<div class="count">تعداد سفارش‌ها: <span id="count">۰</span></div>
+<button class="secondary" onclick="startRegistration()">＋ ثبت سفیر جدید</button>
 </div>
 
 <div id="orderList" class="orders"></div>
@@ -370,19 +422,11 @@ color:#15753f
 <aside class="blueCard">
 <h2 class="blueTitle">سفارشتو اینجا پیدا کن</h2>
 <p class="blueSub">
-در کادر آبی دنبال نام یا کد سفارشت بگرد؛ رگال کنارش نوشته شده.
-<br>
-<b id="shelfCount">۰</b> سفارش در قفسه‌ها
+در کادر آبی نام یا کد سفارشت را پیدا کن؛ رگال کنارش نوشته شده.
+· <b id="shelfCount">۰</b> سفارش در قفسه‌ها
 </p>
 
-<div class="shelfHead">
-<div>رگال</div>
-<div>نام مشتری</div>
-<div>کد سفارش</div>
-<div>چند دقیقه است که آماده شده</div>
-</div>
-
-<div class="shelfBox" id="shelfRows"></div>
+<div class="shelfBox d1" id="shelfRows"></div>
 
 <div class="shelfNote" id="shelfNote"></div>
 <div class="error" id="shelfErr"></div>
@@ -514,6 +558,7 @@ const CONFIRM_FRAMES = 3;         // تعداد تأیید پشت‌سرهم
 const IDENTIFY_TIMEOUT = 25000;   // میلی‌ثانیه
 const YELLOW_MIN = 15;            // بعد از این تعداد دقیقه زرد می‌شود
 const RED_MIN = 30;               // بعد از این تعداد دقیقه قرمز می‌شود
+const PAGE_SECONDS = 8;           // اگر لیست خیلی طولانی بود، هر چند ثانیه صفحه بعد
 const TOKEN_KEY = 'safirToken';
 
 let orders = [];
@@ -528,6 +573,7 @@ let nationalId = '';
 let db = [];
 let enginePromise = null;
 let shelf = { items: [], serverNow: 0, fetchedAt: 0 };
+let pagingOn = false;
 
 const ids = ['login','home','name','phone','national','photos','success','identify'];
 
@@ -535,6 +581,9 @@ function go(id) {
   ids.forEach(x =>
     $(x).classList.toggle('hidden', x !== id)
   );
+
+  $('wrap').classList.toggle('wide', id === 'home');
+  document.body.classList.toggle('onHome', id === 'home');
 
   if (id === 'home') {
     setTimeout(() => $('orderInput').focus(), 100);
@@ -714,7 +763,46 @@ function minutesOf(item) {
   return Math.max(0, Math.floor(ms / 60000));
 }
 
+// بر اساس تعداد سفارش‌ها و ارتفاع کادر، تعداد ستون و اندازه ردیف را انتخاب می‌کند
+function pickLayout(n, h) {
+  const HEAD = 34;
+  const L = [
+    { cols: 1, cls: 'd1', rowH: 74 },
+    { cols: 2, cls: 'd2', rowH: 60 },
+    { cols: 3, cls: 'd3', rowH: 50 }
+  ];
+
+  for (const o of L) {
+    const per = Math.max(1, Math.floor((h - HEAD) / o.rowH));
+    if (per * o.cols >= n) {
+      return { cols: o.cols, cls: o.cls, overflow: false };
+    }
+  }
+
+  return { cols: 3, cls: 'd3', overflow: true };
+}
+
+function makeHead(cls) {
+  const head = document.createElement('div');
+  head.className = 'shelfHead';
+
+  const labels =
+    cls === 'd1' ? ['رگال', 'نام مشتری', 'کد سفارش', 'چند دقیقه است که آماده شده'] :
+    cls === 'd2' ? ['رگال', 'نام مشتری', 'کد سفارش', 'دقیقه'] :
+                   ['رگال', 'نام و کد سفارش', 'دقیقه'];
+
+  labels.forEach(t => {
+    const d = document.createElement('div');
+    d.textContent = t;
+    head.append(d);
+  });
+
+  return head;
+}
+
 function renderShelf() {
+  if ($('home').classList.contains('hidden')) return;
+
   const box = $('shelfRows');
   const top = box.scrollTop;
 
@@ -753,80 +841,121 @@ function renderShelf() {
   });
 
   $('shelfCount').textContent = fa(list.length);
+
+  const lay = pickLayout(list.length, box.clientHeight || 600);
+  box.className = 'shelfBox ' + lay.cls;
+  box.style.gridTemplateColumns = 'repeat(' + lay.cols + ', minmax(0, 1fr))';
   box.innerHTML = '';
+  pagingOn = lay.overflow;
 
   if (!list.length) {
+    box.style.gridTemplateColumns = '1fr';
     const empty = document.createElement('div');
     empty.className = 'shelfEmpty';
     empty.textContent = 'سفارشی در قفسه‌ها نیست.';
     box.append(empty);
+    $('shelfNote').textContent = '';
+    return;
   }
 
+  const size = Math.ceil(list.length / lay.cols);
   let anyAlso = false;
-  let prevName = null;
 
-  list.forEach(it => {
-    const m = minutesOf(it);
-    const row = document.createElement('div');
-    row.className = 'shelfRow';
+  for (let c = 0; c < lay.cols; c++) {
+    const slice = list.slice(c * size, (c + 1) * size);
+    if (!slice.length) continue;
 
-    if (m >= RED_MIN) row.classList.add('bad');
-    else if (m >= YELLOW_MIN) row.classList.add('warn');
+    const col = document.createElement('div');
+    col.className = 'shelfCol';
+    col.append(makeHead(lay.cls));
 
-    if (it.name && myNames.has(it.name)) {
-      row.classList.add('alsoMine');
-      anyAlso = true;
-    }
+    slice.forEach((it, idx) => {
+      const m = minutesOf(it);
+      const row = document.createElement('div');
+      row.className = 'shelfRow';
 
-    const curName = it.name || '';
-    if (prevName !== null && prevName !== curName) {
-      row.classList.add('groupStart');
-    }
-    prevName = curName;
+      if (m >= RED_MIN) row.classList.add('bad');
+      else if (m >= YELLOW_MIN) row.classList.add('warn');
 
-    const regal = document.createElement('div');
-    regal.className = 'regalPill';
-    regal.textContent = fa(it.regal);
-
-    const name = document.createElement('div');
-    name.className = 'sName';
-    if (it.name) {
-      name.textContent = it.name;
-      if (counts[it.name] > 1) {
-        const badge = document.createElement('small');
-        badge.textContent = fa(counts[it.name]) + ' سفارش';
-        name.append(' ', badge);
+      if (it.name && myNames.has(it.name)) {
+        row.classList.add('alsoMine');
+        anyAlso = true;
       }
-    } else {
-      const none = document.createElement('span');
-      none.className = 'none';
-      none.textContent = '—';
-      name.append(none);
-    }
 
-    const code = document.createElement('div');
-    code.className = 'sCode';
-    const s = String(it.order);
-    const head = document.createElement('span');
-    const tail = document.createElement('b');
-    head.textContent = s.slice(0, -4);
-    tail.textContent = s.slice(-4);
-    code.append(head, tail);
+      if (idx > 0 && (slice[idx - 1].name || '') !== (it.name || '')) {
+        row.classList.add('groupStart');
+      }
 
-    const min = document.createElement('div');
-    min.className = 'sMin';
-    min.textContent = fa(m) + ' دقیقه';
+      const regal = document.createElement('div');
+      regal.className = 'regalPill';
+      regal.textContent = fa(it.regal);
 
-    row.append(regal, name, code, min);
-    box.append(row);
-  });
+      const name = document.createElement('div');
+      name.className = 'sName';
+      if (it.name) {
+        name.textContent = it.name;
+        if (counts[it.name] > 1) {
+          const badge = document.createElement('small');
+          badge.textContent = fa(counts[it.name]) + ' سفارش';
+          name.append(' ', badge);
+        }
+      } else {
+        const none = document.createElement('span');
+        none.className = 'none';
+        none.textContent = '—';
+        name.append(none);
+      }
+
+      const code = document.createElement('div');
+      code.className = 'sCode';
+      const s = String(it.order);
+      const head = document.createElement('span');
+      const tail = document.createElement('b');
+      head.textContent = s.slice(0, -4);
+      tail.textContent = s.slice(-4);
+      code.append(head, tail);
+
+      const min = document.createElement('div');
+      min.className = 'sMin';
+      min.textContent = fa(m) + ' دقیقه';
+
+      if (lay.cls === 'd3') {
+        const mid = document.createElement('div');
+        mid.className = 'sMid';
+        mid.append(name, code);
+        row.append(regal, mid, min);
+      } else {
+        row.append(regal, name, code, min);
+      }
+
+      col.append(row);
+    });
+
+    box.append(col);
+  }
 
   $('shelfNote').textContent = anyAlso
     ? '⚠ ردیف‌های نارنجی: از همین مشتری‌ها سفارش دیگری هم در قفسه مانده است.'
     : '';
 
-  box.scrollTop = top;
+  box.scrollTop = lay.overflow ? top : 0;
 }
+
+// وقتی لیست خیلی طولانی است، خودکار صفحه‌به‌صفحه جابه‌جا می‌شود (بدون موس)
+setInterval(() => {
+  if (!pagingOn || $('home').classList.contains('hidden')) return;
+
+  const b = $('shelfRows');
+  if (b.scrollHeight <= b.clientHeight + 4) return;
+
+  if (b.scrollTop + b.clientHeight >= b.scrollHeight - 4) {
+    b.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    b.scrollBy({ top: Math.max(100, b.clientHeight - 40), behavior: 'smooth' });
+  }
+}, PAGE_SECONDS * 1000);
+
+window.addEventListener('resize', () => renderShelf());
 
 /* ---------- موتور تشخیص چهره ---------- */
 
@@ -968,6 +1097,9 @@ function renderOrders() {
     row.append(text, rm);
     $('orderList').append(row);
   });
+
+  // آخرین سفارش اسکن‌شده همیشه دیده شود
+  $('orderList').scrollTop = $('orderList').scrollHeight;
 
   // سفارش اسکن‌شده از کادر آبی حذف می‌شود (و با ✕ برمی‌گردد)
   renderShelf();
