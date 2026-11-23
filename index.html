@@ -27,7 +27,8 @@ color:var(--ink);
 font-family:Tahoma,Arial,sans-serif
 }
 .shell{min-height:100vh;padding:22px 14px 40px}
-.wrap{max-width:900px;margin:auto}
+.wrap{max-width:1320px;margin:auto}
+.narrow{max-width:900px;margin-left:auto;margin-right:auto}
 .header{
 display:flex;
 justify-content:space-between;
@@ -191,12 +192,116 @@ line-height:2
 .small{font-size:13px;color:#8290a1;line-height:2;margin-top:18px}
 .back{margin-top:18px}
 .result{font-size:26px;font-weight:900;color:var(--green);line-height:2;margin-bottom:22px}
+
+/* ----- صفحه اصلی: کادر اسکن (راست) + کادر آبی (چپ) ----- */
+.homeGrid{
+display:grid;
+grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);
+gap:18px;
+align-items:start
+}
+.blueCard{
+border:3px solid var(--blue);
+background:#f4f8ff;
+border-radius:24px;
+padding:18px 14px;
+text-align:center
+}
+.blueTitle{
+font-size:26px;
+font-weight:900;
+color:#0d55b5;
+margin:0 0 4px
+}
+.blueSub{font-size:14px;color:var(--muted);margin:0 0 10px;line-height:1.9}
+.shelfHead,.shelfRow{
+display:grid;
+grid-template-columns:78px minmax(0,1.2fr) minmax(0,1.2fr) 96px;
+gap:8px;
+align-items:center
+}
+.shelfHead{
+font-size:13px;
+font-weight:900;
+color:#38506b;
+padding:6px 8px;
+border-bottom:2px solid #c9ddfb
+}
+.shelfBox{
+max-height:68vh;
+overflow-y:auto;
+text-align:right
+}
+.shelfRow{
+padding:8px;
+border-bottom:1px solid #dbe6f7;
+border-right:6px solid #7fb0ec;
+background:white;
+font-weight:900
+}
+.shelfRow.groupStart{border-top:3px solid #9bbbe6}
+.shelfRow.warn{background:#fff6cf;border-right-color:#e0a800}
+.shelfRow.bad{background:#fde3e3;border-right-color:#c0392b}
+.shelfRow.alsoMine{outline:3px solid #e67e00;outline-offset:-3px}
+.regalPill{
+font-size:32px;
+line-height:1.1;
+text-align:center;
+color:white;
+background:var(--blue);
+border-radius:12px;
+padding:4px 0
+}
+.sName{font-size:18px;color:var(--navy);overflow-wrap:anywhere}
+.sName small{
+display:inline-block;
+font-size:12px;
+color:#0d55b5;
+background:#eaf2ff;
+border-radius:8px;
+padding:1px 7px;
+margin-right:4px
+}
+.sName .none{color:#a3b0bf;font-weight:400}
+.sCode{
+direction:ltr;
+text-align:right;
+font-size:17px;
+color:#38506b
+}
+.sCode b{
+font-size:22px;
+color:#0d55b5;
+background:#eaf2ff;
+border:2px solid #c9ddfb;
+border-radius:8px;
+padding:0 6px;
+margin-right:3px
+}
+.sMin{
+text-align:center;
+font-size:17px;
+border-radius:10px;
+padding:6px 2px;
+background:#e9f6ee;
+color:#15753f
+}
+.warn .sMin{background:#ffe9a3;color:#7a5200}
+.bad .sMin{background:#f6b8b8;color:#8f1d1d}
+.shelfEmpty{padding:28px 10px;color:var(--muted);line-height:2}
+.shelfNote{color:#b35c00;font-weight:900;font-size:13px;margin:8px 0 0;min-height:18px}
+@media(max-width:1000px){
+.homeGrid{grid-template-columns:1fr}
+}
 @media(max-width:600px){
 .scanbox{flex-direction:column}
 .scanbox button{width:100%}
 .card{padding:22px 14px}
 .order{font-size:20px}
 .last4{font-size:25px}
+.shelfHead,.shelfRow{grid-template-columns:56px minmax(0,1fr) minmax(0,1fr) 70px}
+.regalPill{font-size:24px}
+.sName{font-size:15px}
 }
 </style>
 </head>
@@ -213,7 +318,7 @@ line-height:2
 </div>
 </header>
 
-<section id="login" class="card">
+<section id="login" class="card narrow">
 <h1 class="h1">ورود به سامانه</h1>
 <p class="sub">رمز ورود را وارد کنید.</p>
 
@@ -229,7 +334,9 @@ line-height:2
 <div class="error" id="loginError"></div>
 </section>
 
-<section id="home" class="card hidden">
+<section id="home" class="homeGrid hidden">
+
+<div class="card">
 <h1 class="h1">ثبت و تحویل سفارش</h1>
 <p class="sub">
 بارکد سفارش‌ها را اسکن کنید؛ برای پایان نوبت، بارکد FINISH را اسکن کنید.
@@ -258,9 +365,32 @@ line-height:2
 </div>
 
 <div class="error" id="homeError"></div>
+</div>
+
+<aside class="blueCard">
+<h2 class="blueTitle">سفارشتو اینجا پیدا کن</h2>
+<p class="blueSub">
+در کادر آبی دنبال نام یا کد سفارشت بگرد؛ رگال کنارش نوشته شده.
+<br>
+<b id="shelfCount">۰</b> سفارش در قفسه‌ها
+</p>
+
+<div class="shelfHead">
+<div>رگال</div>
+<div>نام مشتری</div>
+<div>کد سفارش</div>
+<div>چند دقیقه است که آماده شده</div>
+</div>
+
+<div class="shelfBox" id="shelfRows"></div>
+
+<div class="shelfNote" id="shelfNote"></div>
+<div class="error" id="shelfErr"></div>
+</aside>
+
 </section>
 
-<section id="name" class="card hidden">
+<section id="name" class="card narrow hidden">
 <h1 class="h1">ثبت سفیر جدید</h1>
 <p class="sub">نام و نام خانوادگی را وارد کنید.</p>
 
@@ -277,7 +407,7 @@ line-height:2
 <button class="secondary back" onclick="go('home')">بازگشت به صفحه اصلی</button>
 </section>
 
-<section id="phone" class="card hidden">
+<section id="phone" class="card narrow hidden">
 <h1 class="h1">شماره تماس</h1>
 
 <div class="field">
@@ -294,7 +424,7 @@ line-height:2
 <button class="secondary back" onclick="go('home')">بازگشت به صفحه اصلی</button>
 </section>
 
-<section id="national" class="card hidden">
+<section id="national" class="card narrow hidden">
 <h1 class="h1">کد ملی</h1>
 
 <div class="field">
@@ -311,7 +441,7 @@ line-height:2
 <button class="secondary back" onclick="go('home')">بازگشت به صفحه اصلی</button>
 </section>
 
-<section id="photos" class="card hidden">
+<section id="photos" class="card narrow hidden">
 <div class="sub" id="photoStep">تصویر ۱ از ۳</div>
 <h1 class="h1">ثبت تصاویر سفیر</h1>
 <p class="sub" id="photoGuide">روبروی دوربین بایستید.</p>
@@ -334,14 +464,14 @@ line-height:2
 <button class="secondary back" onclick="backHomeAndStop()">بازگشت به صفحه اصلی</button>
 </section>
 
-<section id="success" class="card hidden">
+<section id="success" class="card narrow hidden">
 <div class="result">✓ ثبت سفیر با موفقیت انجام شد</div>
 <p id="successName" class="sub"></p>
 <p class="sub">از این پس با نشان دادن چهره، سفارش‌ها به نام ایشان ثبت می‌شود.</p>
 <button class="primary" onclick="resetToHome()">بازگشت به صفحه اصلی</button>
 </section>
 
-<section id="identify" class="card hidden">
+<section id="identify" class="card narrow hidden">
 <h1 class="h1">شناسایی سفیر</h1>
 <p class="sub" id="idGuide">روبروی دوربین بایستید…</p>
 
@@ -382,6 +512,8 @@ const DUPLICATE_THRESHOLD = 0.4;  // جلوگیری از ثبت یک چهره ب
 const SAME_PERSON_MAX = 0.6;      // سه عکس ثبت‌نام باید مال یک نفر باشد
 const CONFIRM_FRAMES = 3;         // تعداد تأیید پشت‌سرهم
 const IDENTIFY_TIMEOUT = 25000;   // میلی‌ثانیه
+const YELLOW_MIN = 15;            // بعد از این تعداد دقیقه زرد می‌شود
+const RED_MIN = 30;               // بعد از این تعداد دقیقه قرمز می‌شود
 const TOKEN_KEY = 'safirToken';
 
 let orders = [];
@@ -395,6 +527,7 @@ let phone = '';
 let nationalId = '';
 let db = [];
 let enginePromise = null;
+let shelf = { items: [], serverNow: 0, fetchedAt: 0 };
 
 const ids = ['login','home','name','phone','national','photos','success','identify'];
 
@@ -405,6 +538,10 @@ function go(id) {
 
   if (id === 'home') {
     setTimeout(() => $('orderInput').focus(), 100);
+    if (isLoggedIn()) {
+      renderShelf();
+      fetchShelf();
+    }
   }
 
   if (id === 'login') {
@@ -495,7 +632,7 @@ async function doLogin() {
   $('loginError').textContent = 'در حال بررسی…';
 
   try {
-    const r = await api('login', { password: pass });
+    const r = await api('login', { password: pass, role: 'courier' });
 
     try { localStorage.setItem(TOKEN_KEY, r.token); } catch (e) {
       throw new Error('مرورگر اجازه ذخیره ورود را نمی‌دهد.');
@@ -531,6 +668,7 @@ function forceLogout(msg) {
 
   db = [];
   enginePromise = null;
+  shelf = { items: [], serverNow: 0, fetchedAt: 0 };
 
   $('logoutBtn').classList.add('hidden');
   setEngine('loading', 'در انتظار ورود');
@@ -548,6 +686,146 @@ async function logout() {
   orders = [];
   renderOrders();
   forceLogout('');
+}
+
+/* ---------- کادر آبی: سفارش‌های داخل قفسه ---------- */
+
+async function fetchShelf() {
+  if (!isLoggedIn()) return;
+
+  try {
+    const r = await api('getShelfList');
+    shelf = {
+      items: r.items || [],
+      serverNow: r.now || Date.now(),
+      fetchedAt: Date.now()
+    };
+    $('shelfErr').textContent = '';
+    renderShelf();
+  } catch (e) {
+    if (isLoggedIn()) {
+      $('shelfErr').textContent = 'به‌روزرسانی لیست ناموفق بود؛ دوباره تلاش می‌شود.';
+    }
+  }
+}
+
+function minutesOf(item) {
+  const ms = (shelf.serverNow - item.placedAt) + (Date.now() - shelf.fetchedAt);
+  return Math.max(0, Math.floor(ms / 60000));
+}
+
+function renderShelf() {
+  const box = $('shelfRows');
+  const top = box.scrollTop;
+
+  const scanned = new Set(orders);
+  const byOrder = new Map(shelf.items.map(i => [i.order, i]));
+
+  // نام مشتری‌هایی که سفیر از آن‌ها سفارش اسکن کرده
+  const myNames = new Set();
+  orders.forEach(o => {
+    const it = byOrder.get(o);
+    if (it && it.name) myNames.add(it.name);
+  });
+
+  const list = shelf.items.filter(i => !scanned.has(i.order));
+
+  list.sort((a, b) => {
+    const an = a.name || '';
+    const bn = b.name || '';
+
+    if (an && !bn) return -1;
+    if (!an && bn) return 1;
+
+    if (an !== bn) return an.localeCompare(bn, 'fa');
+
+    if (!an) {
+      return a.order.localeCompare(b.order, undefined, { numeric: true });
+    }
+
+    return (a.placedAt - b.placedAt) ||
+      a.order.localeCompare(b.order, undefined, { numeric: true });
+  });
+
+  const counts = {};
+  list.forEach(i => {
+    if (i.name) counts[i.name] = (counts[i.name] || 0) + 1;
+  });
+
+  $('shelfCount').textContent = fa(list.length);
+  box.innerHTML = '';
+
+  if (!list.length) {
+    const empty = document.createElement('div');
+    empty.className = 'shelfEmpty';
+    empty.textContent = 'سفارشی در قفسه‌ها نیست.';
+    box.append(empty);
+  }
+
+  let anyAlso = false;
+  let prevName = null;
+
+  list.forEach(it => {
+    const m = minutesOf(it);
+    const row = document.createElement('div');
+    row.className = 'shelfRow';
+
+    if (m >= RED_MIN) row.classList.add('bad');
+    else if (m >= YELLOW_MIN) row.classList.add('warn');
+
+    if (it.name && myNames.has(it.name)) {
+      row.classList.add('alsoMine');
+      anyAlso = true;
+    }
+
+    const curName = it.name || '';
+    if (prevName !== null && prevName !== curName) {
+      row.classList.add('groupStart');
+    }
+    prevName = curName;
+
+    const regal = document.createElement('div');
+    regal.className = 'regalPill';
+    regal.textContent = fa(it.regal);
+
+    const name = document.createElement('div');
+    name.className = 'sName';
+    if (it.name) {
+      name.textContent = it.name;
+      if (counts[it.name] > 1) {
+        const badge = document.createElement('small');
+        badge.textContent = fa(counts[it.name]) + ' سفارش';
+        name.append(' ', badge);
+      }
+    } else {
+      const none = document.createElement('span');
+      none.className = 'none';
+      none.textContent = '—';
+      name.append(none);
+    }
+
+    const code = document.createElement('div');
+    code.className = 'sCode';
+    const s = String(it.order);
+    const head = document.createElement('span');
+    const tail = document.createElement('b');
+    head.textContent = s.slice(0, -4);
+    tail.textContent = s.slice(-4);
+    code.append(head, tail);
+
+    const min = document.createElement('div');
+    min.className = 'sMin';
+    min.textContent = fa(m) + ' دقیقه';
+
+    row.append(regal, name, code, min);
+    box.append(row);
+  });
+
+  $('shelfNote').textContent = anyAlso
+    ? '⚠ ردیف‌های نارنجی: از همین مشتری‌ها سفارش دیگری هم در قفسه مانده است.'
+    : '';
+
+  box.scrollTop = top;
 }
 
 /* ---------- موتور تشخیص چهره ---------- */
@@ -690,6 +968,9 @@ function renderOrders() {
     row.append(text, rm);
     $('orderList').append(row);
   });
+
+  // سفارش اسکن‌شده از کادر آبی حذف می‌شود (و با ✕ برمی‌گردد)
+  renderShelf();
 }
 
 /* ---------- تحویل با تشخیص چهره ---------- */
@@ -877,6 +1158,7 @@ async function finishHandoff(courier, distance) {
 
     orders = [];
     renderOrders();
+    fetchShelf();
 
     setTimeout(() => {
       if (token === idToken && isLoggedIn()) go('home');
@@ -1133,6 +1415,19 @@ setInterval(() => {
     refreshDatabase().catch(() => {});
   }
 }, 120000);
+
+// کادر آبی: دریافت از شیت هر ۱۵ ثانیه، محاسبه دقیقه‌ها هر ۱۰ ثانیه
+setInterval(() => {
+  if (isLoggedIn() && !$('home').classList.contains('hidden')) {
+    fetchShelf();
+  }
+}, 15000);
+
+setInterval(() => {
+  if (isLoggedIn() && !$('home').classList.contains('hidden')) {
+    renderShelf();
+  }
+}, 10000);
 
 /* ---------- شروع ---------- */
 
