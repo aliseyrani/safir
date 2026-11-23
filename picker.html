@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ثبت سفارش در قفسه (پیکر)</title>
+
+<style>
+:root{
+--blue:#1769d2;
+--navy:#122b4a;
+--ink:#17263a;
+--muted:#68788c;
+--bg:#f3f6fb;
+--line:#dfe7f0;
+--green:#15965a;
+--red:#bd3333;
+--amber:#b7791f
+}
+*{box-sizing:border-box}
+body{
+margin:0;
+background:var(--bg);
+color:var(--ink);
+font-family:Tahoma,Arial,sans-serif
+}
+.shell{min-height:100vh;padding:18px 14px 40px}
+.wrap{max-width:900px;margin:auto}
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+flex-wrap:wrap;
+margin-bottom:16px
+}
+.brand{font-weight:900;color:var(--navy);font-size:18px}
+.headRight{display:flex;align-items:center;gap:10px}
+.pill{
+font-size:12px;
+color:var(--green);
+background:#eaf8f0;
+padding:8px 12px;
+border-radius:30px
+}
+.pill.warn{color:var(--amber);background:#fff6e0}
+.pill.bad{color:var(--red);background:#fdeaea}
+.card{
+background:white;
+border:1px solid var(--line);
+border-radius:24px;
+padding:clamp(18px,3vw,32px);
+box-shadow:0 12px 35px #1834540b;
+text-align:center;
+margin-bottom:16px
+}
+.hidden{display:none!important}
+.h1{
+font-size:clamp(26px,5vw,38px);
+line-height:1.6;
+color:var(--navy);
+margin:0 0 10px;
+font-weight:900
+}
+.sub{font-size:17px;color:var(--muted);line-height:2;margin:0 auto 18px}
+.field{max-width:520px;margin:18px auto;text-align:right}
+.field label{display:block;font-weight:900;margin-bottom:9px}
+.field input,.scanbox input{
+width:100%;
+padding:18px;
+border:3px solid var(--line);
+border-radius:16px;
+font:inherit;
+font-size:24px;
+outline:none
+}
+.field input:focus,.scanbox input:focus{border-color:var(--blue)}
+button{
+font:inherit;
+border:0;
+border-radius:14px;
+padding:14px 22px;
+font-weight:900;
+cursor:pointer
+}
+button:disabled{opacity:.55;cursor:not-allowed}
+.primary{background:var(--blue);color:white}
+.secondary{background:#edf2f8;color:#38506b}
+.logout{padding:8px 14px;font-size:13px;border-radius:30px}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.error{color:var(--red);line-height:2;margin:10px;font-weight:900}
+
+.regalBanner{
+border-radius:26px;
+padding:22px 14px;
+color:white;
+text-align:center;
+margin-bottom:16px;
+transition:background .2s
+}
+.regalBanner small{display:block;font-size:20px;opacity:.9;margin-bottom:4px}
+.regalBanner b{display:block;font-size:clamp(64px,16vw,120px);line-height:1.1}
+.regalBanner.none{background:#c0392b}
+.regalBanner.none b{font-size:clamp(26px,6vw,40px);line-height:1.8}
+
+.scanbox{max-width:700px;margin:0 auto}
+.msg{
+min-height:64px;
+margin:14px auto 4px;
+font-size:clamp(20px,4vw,28px);
+font-weight:900;
+line-height:1.6;
+padding:10px;
+border-radius:16px
+}
+.msg.ok{color:#0f7a45;background:#e6f6ec}
+.msg.err{color:#a62a2a;background:#fde6e6}
+.msg.info{color:#0d55b5;background:#eaf2ff}
+.stats{
+display:flex;
+gap:10px;
+justify-content:center;
+flex-wrap:wrap;
+margin:10px 0
+}
+.stat{
+background:#f3f7fd;
+border:2px solid #dce7f7;
+border-radius:14px;
+padding:8px 16px;
+font-weight:900;
+color:var(--navy)
+}
+.stat b{font-size:22px;color:var(--blue)}
+
+.recent{max-width:760px;margin:0 auto;text-align:right}
+.item{
+display:grid;
+grid-template-columns:36px 64px minmax(0,1fr) auto;
+gap:8px;
+align-items:center;
+padding:9px 8px;
+border-bottom:1px solid var(--line);
+font-weight:900
+}
+.item .ic{font-size:22px;text-align:center}
+.item .rg{
+font-size:26px;
+color:white;
+text-align:center;
+border-radius:10px;
+padding:2px 0
+}
+.item .cd{direction:ltr;text-align:right;font-size:20px}
+.item .cd b{
+color:#0d55b5;
+background:#eaf2ff;
+border:2px solid #c9ddfb;
+border-radius:8px;
+padding:0 6px;
+margin-right:3px;
+font-size:24px
+}
+.item .nt{display:block;font-size:13px;color:var(--muted);font-weight:400;direction:rtl}
+.item.err .nt{color:var(--red);font-weight:900}
+.item.cancelled .cd{text-decoration:line-through;color:#a3b0bf}
+.rm{
+background:#fdeaea;
+color:var(--red);
+padding:6px 12px;
+font-size:16px;
+border-radius:10px
+}
+.listTitle{
+font-size:18px;
+font-weight:900;
+color:var(--navy);
+margin:6px 0 8px
+}
+.small{font-size:13px;color:#8290a1;line-height:2;margin-top:14px;text-align:center}
+</style>
+</head>
+
+<body>
+<main class="shell">
+<div class="wrap">
+
+<header class="header">
+<div class="brand">📦 ثبت سفارش در قفسه (پیکر)</div>
+<div class="headRight">
+<div class="pill hidden" id="netPill">متصل</div>
+<button class="secondary logout hidden" id="logoutBtn" onclick="logout()">خروج</button>
+</div>
+</header>
+
+<section id="login" class="card">
+<h1 class="h1">ورود پیکر</h1>
+<p class="sub">رمز ورود را وارد کنید.</p>
+
+<div class="field">
+<label>رمز ورود</label>
+<input id="passInput" type="password" autocomplete="current-password">
+</div>
+
+<div class="actions">
+<button class="primary" id="loginBtn" onclick="doLogin()">ورود</button>
+</div>
+
+<div class="error" id="loginError"></div>
+</section>
+
+<section id="main" class="hidden">
+
+<div class="regalBanner none" id="regalBanner">
+<small id="regalSmall">رگال انتخاب نشده</small>
+<b id="regalBig">اول بارکد رگال را اسکن کنید</b>
+</div>
+
+<div class="card">
+<div class="scanbox">
+<input id="scanInput" autocomplete="off" placeholder="اسکن: اول رگال، بعد سفارش‌ها">
+</div>
+
+<div class="msg info" id="msg">بارکد رگال را اسکن کنید.</div>
+
+<div class="stats">
+<div class="stat">ثبت‌شده در این رگال: <b id="stRegal">۰</b></div>
+<div class="stat">در صف ذخیره: <b id="stQueue">۰</b></div>
+</div>
+
+<div class="actions">
+<button class="secondary" onclick="undoLast()">↩ برگرداندن آخرین اسکن</button>
+</div>
+</div>
+
+<div class="card">
+<div class="listTitle">آخرین اسکن‌ها</div>
+<div class="recent" id="recent"></div>
+</div>
+
+</section>
+
+<footer class="small">
+هر سفارش بعد از اسکن همان لحظه در گوگل‌شیت ذخیره می‌شود.
+</footer>
+
+</div>
+</main>
+
+<script>
+/* ===== فقط همین خط را عوض کن: آدرس Web app که از Apps Script کپی کردی ===== */
+const API_URL = 'https://script.google.com/macros/s/AKfycbzsZDK5TC6444svPdceC4SWZkxbbPSAYF1fuh0OCPTipn7bzVzbyjx7n0mso_bO4Yve/exec';
+/* ======================================================================== */
+
+const $ = id => document.getElementById(id);
+
+const TOKEN_KEY = 'safirPickerToken';
+const REGAL_COUNT = 6;
+const REGAL_COLORS = ['#1769d2', '#15965a', '#b7791f', '#7a3fc4', '#c43f7a', '#0f8a9d'];
+const MAX_VISIBLE = 40;
+
+let currentRegal = '';
+let items = [];
+let seq = 0;
+let flushing = false;
+let audioCtx = null;
+
+function fa(n) {
+  return new Intl.NumberFormat('fa-IR').format(n);
+}
+
+function norm(v) {
+  return String(v)
+    .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+    .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+    .replace(/\s/g, '');
+}
+
+function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+function isLoggedIn() {
+  try {
+    return !!localStorage.getItem(TOKEN_KEY);
+  } catch (e) {
+    return false;
+  }
+}
+
+function regalColor(r) {
+  return REGAL_COLORS[(Number(r) - 1) % REGAL_COLORS.length] || '#1769d2';
+}
+
+/* ---------- صدا ---------- */
+
+function beep(freq, ms, times) {
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    let t = audioCtx.currentTime;
+
+    for (let i = 0; i < (times || 1); i++) {
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.frequency.value = freq;
+      g.gain.value = 0.18;
+      o.connect(g);
+      g.connect(audioCtx.destination);
+      o.start(t);
+      o.stop(t + ms / 1000);
+      t += ms / 1000 + 0.06;
+    }
+  } catch (e) {}
+}
+
+const okBeep = () => beep(880, 90, 1);
+const regalBeep = () => beep(660, 120, 2);
+const errBeep = () => beep(200, 320, 2);
+
+/* ---------- ارتباط با Apps Script ---------- */
+
+async function api(action, data) {
+  let token = '';
+  try { token = localStorage.getItem(TOKEN_KEY) || ''; } catch (e) {}
+
+  let res;
+  try {
+    res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: action, token: token, data: data || {} })
+    });
+  } catch (e) {
+    const err = new Error('ارتباط با سرور برقرار نشد.');
+    err.network = true;
+    throw err;
+  }
+
+  let j;
+  try {
+    j = await res.json();
+  } catch (e) {
+    const err = new Error('پاسخ سرور معتبر نیست.');
+    err.network = true;
+    throw err;
+  }
+
+  if (!j.ok) {
+    if (j.code === 'AUTH') {
+      forceLogout('نشست منقضی شده است؛ دوباره وارد شوید.');
+    }
+    throw new Error(j.error || 'خطای ناشناخته');
+  }
+
+  return j.result;
+}
+
+/* ---------- ورود و خروج ---------- */
+
+async function doLogin() {
+  const pass = $('passInput').value;
+  if (!pass) {
+    $('loginError').textContent = 'رمز را وارد کنید.';
+    return;
+  }
+
+  $('loginBtn').disabled = true;
+  $('loginError').textContent = 'در حال بررسی…';
+
+  try {
+    const r = await api('login', { password: pass, role: 'picker' });
+
+    try { localStorage.setItem(TOKEN_KEY, r.token); } catch (e) {
+      throw new Error('مرورگر اجازه ذخیره ورود را نمی‌دهد.');
+    }
+
+    $('passInput').value = '';
+    $('loginError').textContent = '';
+    showMain();
+
+  } catch (e) {
+    $('loginError').textContent = e.message;
+  } finally {
+    $('loginBtn').disabled = false;
+  }
+}
+
+$('passInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+function showMain() {
+  $('login').classList.add('hidden');
+  $('main').classList.remove('hidden');
+  $('logoutBtn').classList.remove('hidden');
+  $('netPill').classList.remove('hidden');
+  setRegal('');
+  setMsg('info', 'بارکد رگال را اسکن کنید.');
+  render();
+  setTimeout(() => $('scanInput').focus(), 100);
+}
+
+function forceLogout(msg) {
+  try { localStorage.removeItem(TOKEN_KEY); } catch (e) {}
+
+  currentRegal = '';
+  items = [];
+
+  $('main').classList.add('hidden');
+  $('login').classList.remove('hidden');
+  $('logoutBtn').classList.add('hidden');
+  $('netPill').classList.add('hidden');
+  $('loginError').textContent = msg || '';
+  setTimeout(() => $('passInput').focus(), 100);
+}
+
+async function logout() {
+  const waiting = items.filter(i => i.state === 'pending' || i.state === 'sending').length;
+
+  if (waiting && !confirm('هنوز ' + fa(waiting) + ' سفارش ذخیره نشده است. خروج انجام شود؟')) {
+    return;
+  }
+
+  try { await api('logout'); } catch (e) {}
+  forceLogout('');
+}
+
+/* ---------- نمایش ---------- */
+
+function setMsg(kind, text) {
+  const el = $('msg');
+  el.className = 'msg ' + kind;
+  el.textContent = text;
+}
+
+function setRegal(r) {
+  currentRegal = r;
+
+  const banner = $('regalBanner');
+
+  if (!r) {
+    banner.className = 'regalBanner none';
+    banner.style.background = '';
+    $('regalSmall').textContent = 'رگال انتخاب نشده';
+    $('regalBig').textContent = 'اول بارکد رگال را اسکن کنید';
+  } else {
+    banner.className = 'regalBanner';
+    banner.style.background = regalColor(r);
+    $('regalSmall').textContent = 'رگال';
+    $('regalBig').textContent = fa(r);
+  }
+
+  renderStats();
+}
+
+function activeItems() {
+  return items.filter(i =>
+    i.state === 'pending' || i.state === 'sending' || i.state === 'saved'
+  );
+}
+
+function renderStats() {
+  const inRegal = activeItems().filter(i => i.regal === currentRegal).length;
+  const queued = items.filter(i => i.state === 'pending' || i.state === 'sending').length;
+
+  $('stRegal').textContent = fa(currentRegal ? inRegal : 0);
+  $('stQueue').textContent = fa(queued);
+
+  const pill = $('netPill');
+  if (queued > 0) {
+    pill.className = 'pill warn';
+    pill.textContent = 'در حال ذخیره…';
+  } else {
+    pill.className = 'pill';
+    pill.textContent = 'همه ذخیره شد';
+  }
+}
+
+function render() {
+  renderStats();
+
+  const box = $('recent');
+  box.innerHTML = '';
+
+  const shown = items.slice(-MAX_VISIBLE).reverse();
+
+  if (!shown.length) {
+    const e = document.createElement('div');
+    e.className = 'sub';
+    e.textContent = 'هنوز سفارشی اسکن نشده است.';
+    box.append(e);
+    return;
+  }
+
+  shown.forEach(it => {
+    const row = document.createElement('div');
+    row.className = 'item ' + (it.state === 'error' ? 'err' : it.state === 'cancelled' ? 'cancelled' : '');
+
+    const ic = document.createElement('div');
+    ic.className = 'ic';
+    ic.textContent =
+      it.state === 'saved' ? '✅' :
+      it.state === 'error' ? '⚠️' :
+      it.state === 'cancelled' ? '✖️' : '⏳';
+
+    const rg = document.createElement('div');
+    rg.className = 'rg';
+    rg.style.background = regalColor(it.regal);
+    rg.textContent = fa(it.regal);
+
+    const cd = document.createElement('div');
+    cd.className = 'cd';
+    const s = String(it.order);
+    const head = document.createElement('span');
+    const tail = document.createElement('b');
+    head.textContent = s.slice(0, -4);
+    tail.textContent = s.slice(-4);
+    cd.append(head, tail);
+
+    if (it.msg) {
+      const nt = document.createElement('span');
+      nt.className = 'nt';
+      nt.textContent = it.msg;
+      cd.append(nt);
+    }
+
+    row.append(ic, rg, cd);
+
+    if (it.state === 'saved' || it.state === 'pending') {
+      const rm = document.createElement('button');
+      rm.className = 'rm';
+      rm.textContent = '✕';
+      rm.title = 'حذف این سفارش از قفسه';
+      rm.onclick = () => cancelItem(it);
+      row.append(rm);
+    } else {
+      row.append(document.createElement('span'));
+    }
+
+    box.append(row);
+  });
+}
+
+/* ---------- اسکن ---------- */
+
+function handleScan(raw) {
+  const v = String(raw).trim();
+  if (!v) return;
+
+  const nv = norm(v).toUpperCase();
+  const m = nv.match(/^(?:REGAL-?)?(\d)$/);
+
+  // اسکن تک‌رقمی (یا REGAL-n) یعنی بارکد رگال
+  if (m) {
+    const n = Number(m[1]);
+
+    if (n >= 1 && n <= REGAL_COUNT) {
+      setRegal(String(n));
+      setMsg('info', 'رگال ' + fa(n) + ' انتخاب شد. حالا سفارش‌ها را اسکن کنید.');
+      regalBeep();
+    } else {
+      setMsg('err', 'رگال نامعتبر است: ' + v);
+      errBeep();
+    }
+    return;
+  }
+
+  if (!currentRegal) {
+    setMsg('err', 'اول بارکد رگال را اسکن کنید!');
+    errBeep();
+    return;
+  }
+
+  const dup = items.find(i =>
+    i.order === v &&
+    i.regal === currentRegal &&
+    (i.state === 'pending' || i.state === 'sending' || i.state === 'saved')
+  );
+
+  if (dup) {
+    setMsg('err', 'این سفارش همین الان در رگال ' + fa(currentRegal) + ' ثبت شد.');
+    errBeep();
+    return;
+  }
+
+  items.push({
+    id: ++seq,
+    order: v,
+    regal: currentRegal,
+    state: 'pending',
+    msg: ''
+  });
+
+  setMsg('ok', '✓ رگال ' + fa(currentRegal) + ' ← ' + v);
+  okBeep();
+  render();
+  flush();
+}
+
+$('scanInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const v = $('scanInput').value;
+    $('scanInput').value = '';
+    handleScan(v);
+  }
+});
+
+/* ---------- صف ذخیره‌سازی ---------- */
+
+async function flush() {
+  if (flushing) return;
+  flushing = true;
+
+  try {
+    while (isLoggedIn()) {
+      const first = items.find(i => i.state === 'pending');
+      if (!first) break;
+
+      const batch = items
+        .filter(i => i.state === 'pending' && i.regal === first.regal)
+        .slice(0, 40);
+
+      batch.forEach(i => { i.state = 'sending'; });
+      render();
+
+      try {
+        const res = await api('placeOrders', {
+          regal: first.regal,
+          orders: batch.map(i => i.order)
+        });
+
+        const map = {};
+        (res.results || []).forEach(r => { map[r.order] = r; });
+
+        let hadError = false;
+
+        batch.forEach(i => {
+          const r = map[i.order] || {};
+
+          if (r.status === 'new') {
+            i.state = 'saved';
+            i.msg = '';
+          } else if (r.status === 'same') {
+            i.state = 'saved';
+            i.msg = 'قبلاً در همین رگال ثبت شده بود';
+          } else if (r.status === 'moved') {
+            i.state = 'saved';
+            i.msg = 'از رگال ' + fa(r.from) + ' منتقل شد';
+          } else if (r.status === 'delivered') {
+            i.state = 'error';
+            i.msg = 'این سفارش قبلاً تحویل شده است';
+            hadError = true;
+          } else {
+            i.state = 'error';
+            i.msg = 'کد سفارش نامعتبر است';
+            hadError = true;
+          }
+        });
+
+        if (hadError) {
+          setMsg('err', 'یک یا چند سفارش ثبت نشد؛ لیست پایین را ببینید.');
+          errBeep();
+        }
+
+      } catch (e) {
+        if (e.network) {
+          batch.forEach(i => { i.state = 'pending'; });
+          render();
+
+          const pill = $('netPill');
+          pill.className = 'pill bad';
+          pill.textContent = 'اینترنت قطع است؛ تلاش مجدد…';
+
+          await sleep(3000);
+          continue;
+        }
+
+        if (!isLoggedIn()) return;
+
+        batch.forEach(i => {
+          i.state = 'error';
+          i.msg = e.message || 'خطا در ذخیره';
+        });
+
+        setMsg('err', e.message || 'خطا در ذخیره');
+        errBeep();
+      }
+
+      render();
+    }
+  } finally {
+    flushing = false;
+    render();
+  }
+}
+
+/* ---------- برگرداندن ---------- */
+
+async function cancelItem(it) {
+  if (it.state === 'pending') {
+    it.state = 'cancelled';
+    it.msg = 'لغو شد';
+    render();
+    return;
+  }
+
+  if (it.state !== 'saved') return;
+
+  try {
+    await api('cancelPlacement', { order: it.order });
+    it.state = 'cancelled';
+    it.msg = 'از قفسه حذف شد';
+    setMsg('info', 'سفارش ' + it.order + ' از قفسه حذف شد.');
+  } catch (e) {
+    setMsg('err', e.network ? 'اینترنت قطع است؛ دوباره تلاش کنید.' : e.message);
+    errBeep();
+  }
+
+  render();
+  $('scanInput').focus();
+}
+
+function undoLast() {
+  const last = items
+    .slice()
+    .reverse()
+    .find(i => i.state === 'pending' || i.state === 'saved');
+
+  if (!last) {
+    setMsg('info', 'چیزی برای برگرداندن نیست.');
+    return;
+  }
+
+  cancelItem(last);
+}
+
+/* ---------- نگهداری فوکوس اسکنر ---------- */
+
+document.addEventListener('click', e => {
+  if (!$('main').classList.contains('hidden') && !e.target.closest('button')) {
+    $('scanInput').focus();
+  }
+});
+
+setInterval(() => {
+  if (!$('main').classList.contains('hidden') &&
+      document.activeElement === document.body) {
+    $('scanInput').focus();
+  }
+}, 1000);
+
+// اگر چیزی در صف مانده باشد، هر ۱۰ ثانیه دوباره تلاش می‌شود
+setInterval(() => {
+  if (isLoggedIn() && items.some(i => i.state === 'pending')) flush();
+}, 10000);
+
+/* ---------- شروع ---------- */
+
+(async function boot() {
+  if (API_URL.indexOf('PASTE_') === 0) {
+    $('loginError').textContent = 'آدرس API هنوز در picker.html تنظیم نشده است.';
+    return;
+  }
+
+  if (!isLoggedIn()) {
+    setTimeout(() => $('passInput').focus(), 100);
+    return;
+  }
+
+  try {
+    await api('ping');
+    showMain();
+  } catch (e) {
+    if (isLoggedIn()) {
+      $('loginError').textContent = e.message;
+    }
+  }
+})();
+</script>
+</body>
+</html>
