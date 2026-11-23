@@ -24,15 +24,15 @@ background:var(--bg);
 color:var(--ink);
 font-family:Tahoma,Arial,sans-serif
 }
-.shell{min-height:100vh;padding:18px 14px 40px}
-.wrap{max-width:900px;margin:auto}
+.shell{min-height:100vh;padding:10px 14px 12px}
+.wrap{max-width:1700px;margin:auto}
 .header{
 display:flex;
 justify-content:space-between;
 align-items:center;
 gap:10px;
 flex-wrap:wrap;
-margin-bottom:16px
+margin-bottom:10px
 }
 .brand{font-weight:900;color:var(--navy);font-size:18px}
 .headRight{display:flex;align-items:center;gap:10px}
@@ -49,10 +49,9 @@ border-radius:30px
 background:white;
 border:1px solid var(--line);
 border-radius:24px;
-padding:clamp(18px,3vw,32px);
+padding:clamp(16px,2.5vw,28px);
 box-shadow:0 12px 35px #1834540b;
-text-align:center;
-margin-bottom:16px
+text-align:center
 }
 .hidden{display:none!important}
 .h1{
@@ -67,7 +66,7 @@ font-weight:900
 .field label{display:block;font-weight:900;margin-bottom:9px}
 .field input,.scanbox input{
 width:100%;
-padding:18px;
+padding:16px;
 border:3px solid var(--line);
 border-radius:16px;
 font:inherit;
@@ -87,59 +86,82 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .primary{background:var(--blue);color:white}
 .secondary{background:#edf2f8;color:#38506b}
 .logout{padding:8px 14px;font-size:13px;border-radius:30px}
-.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
 .error{color:var(--red);line-height:2;margin:10px;font-weight:900}
+.loginCard{max-width:560px;margin:40px auto}
 
+/* ----- چیدمان تمام‌صفحه، بدون اسکرول ----- */
+.layout{
+display:grid;
+grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+gap:14px;
+height:calc(100vh - 78px);
+min-height:560px
+}
+.ctrl{display:flex;flex-direction:column;gap:12px;min-height:0}
 .regalBanner{
 border-radius:26px;
-padding:22px 14px;
+padding:12px 14px;
 color:white;
 text-align:center;
-margin-bottom:16px;
-transition:background .2s
+transition:background .2s;
+flex:none
 }
-.regalBanner small{display:block;font-size:20px;opacity:.9;margin-bottom:4px}
-.regalBanner b{display:block;font-size:clamp(64px,16vw,120px);line-height:1.1}
+.regalBanner small{display:block;font-size:20px;opacity:.9}
+.regalBanner b{display:block;font-size:clamp(60px,14vh,120px);line-height:1.1}
 .regalBanner.none{background:#c0392b}
-.regalBanner.none b{font-size:clamp(26px,6vw,40px);line-height:1.8}
-
-.scanbox{max-width:700px;margin:0 auto}
+.regalBanner.none b{font-size:clamp(24px,4.5vh,38px);line-height:1.9}
+.ctrlCard{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
+.scanbox{max-width:700px;margin:0 auto;width:100%}
 .msg{
 min-height:64px;
-margin:14px auto 4px;
-font-size:clamp(20px,4vw,28px);
+margin:12px auto 4px;
+font-size:clamp(20px,3.5vh,28px);
 font-weight:900;
 line-height:1.6;
 padding:10px;
-border-radius:16px
+border-radius:16px;
+width:100%
 }
 .msg.ok{color:#0f7a45;background:#e6f6ec}
 .msg.err{color:#a62a2a;background:#fde6e6}
 .msg.info{color:#0d55b5;background:#eaf2ff}
-.stats{
-display:flex;
-gap:10px;
-justify-content:center;
-flex-wrap:wrap;
-margin:10px 0
-}
+.stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:8px 0}
 .stat{
 background:#f3f7fd;
 border:2px solid #dce7f7;
 border-radius:14px;
-padding:8px 16px;
+padding:6px 14px;
 font-weight:900;
 color:var(--navy)
 }
 .stat b{font-size:22px;color:var(--blue)}
+.finishBox{
+flex:none;
+padding:10px 14px;
+background:#fff8e9;
+border:2px dashed #edbd62;
+border-radius:18px;
+text-align:center
+}
+.finishBox strong{font-size:30px;color:#754500;letter-spacing:2px}
+.finishBox p{font-size:17px;font-weight:900;color:#855a16;margin:2px 0 0}
 
-.recent{max-width:760px;margin:0 auto;text-align:right}
+.listCard{
+display:flex;
+flex-direction:column;
+min-height:0;
+overflow:hidden;
+padding:14px 16px
+}
+.listTitle{font-size:18px;font-weight:900;color:var(--navy);margin:0 0 6px}
+.recent{flex:1;min-height:0;overflow:hidden;text-align:right}
 .item{
 display:grid;
 grid-template-columns:36px 64px minmax(0,1fr) auto;
 gap:8px;
 align-items:center;
-padding:9px 8px;
+padding:8px 6px;
 border-bottom:1px solid var(--line);
 font-weight:900
 }
@@ -171,13 +193,30 @@ padding:6px 12px;
 font-size:16px;
 border-radius:10px
 }
-.listTitle{
-font-size:18px;
-font-weight:900;
-color:var(--navy);
-margin:6px 0 8px
+
+/* ----- صفحه پایان کار (بعد از FINISH) ----- */
+.overlay{
+position:fixed;
+inset:0;
+z-index:50;
+display:grid;
+place-items:center;
+text-align:center;
+color:white;
+padding:24px
 }
-.small{font-size:13px;color:#8290a1;line-height:2;margin-top:14px;text-align:center}
+.overlay.ok{background:#15965a}
+.overlay.err{background:#bd3333}
+.overlay.wait{background:#b7791f}
+.ovIcon{font-size:clamp(70px,16vh,150px);line-height:1.1}
+.ovTitle{font-size:clamp(32px,7vh,64px);font-weight:900;line-height:1.5;margin:6px 0}
+.ovLines{font-size:clamp(22px,4vh,38px);font-weight:900;line-height:1.9}
+.ovHint{font-size:clamp(16px,2.6vh,24px);opacity:.9;margin-top:14px}
+
+@media(max-width:1000px){
+.layout{grid-template-columns:1fr;height:auto}
+.recent{overflow:visible}
+}
 </style>
 </head>
 
@@ -193,7 +232,7 @@ margin:6px 0 8px
 </div>
 </header>
 
-<section id="login" class="card">
+<section id="login" class="card loginCard">
 <h1 class="h1">ورود پیکر</h1>
 <p class="sub">رمز ورود را وارد کنید.</p>
 
@@ -209,14 +248,16 @@ margin:6px 0 8px
 <div class="error" id="loginError"></div>
 </section>
 
-<section id="main" class="hidden">
+<section id="main" class="layout hidden">
+
+<div class="ctrl">
 
 <div class="regalBanner none" id="regalBanner">
 <small id="regalSmall">رگال انتخاب نشده</small>
 <b id="regalBig">اول بارکد رگال را اسکن کنید</b>
 </div>
 
-<div class="card">
+<div class="card ctrlCard">
 <div class="scanbox">
 <input id="scanInput" autocomplete="off" placeholder="اسکن: اول رگال، بعد سفارش‌ها">
 </div>
@@ -233,19 +274,31 @@ margin:6px 0 8px
 </div>
 </div>
 
-<div class="card">
+<div class="finishBox">
+<strong>FINISH</strong>
+<p>پایان کار: بارکد FINISH را اسکن کنید</p>
+</div>
+
+</div>
+
+<div class="card listCard">
 <div class="listTitle">آخرین اسکن‌ها</div>
 <div class="recent" id="recent"></div>
 </div>
 
 </section>
 
-<footer class="small">
-هر سفارش بعد از اسکن همان لحظه در گوگل‌شیت ذخیره می‌شود.
-</footer>
-
 </div>
 </main>
+
+<div class="overlay hidden" id="doneOverlay">
+<div>
+<div class="ovIcon" id="ovIcon">✓</div>
+<div class="ovTitle" id="ovTitle"></div>
+<div class="ovLines" id="ovLines"></div>
+<div class="ovHint" id="ovHint"></div>
+</div>
+</div>
 
 <script>
 /* ===== فقط همین خط را عوض کن: آدرس Web app که از Apps Script کپی کردی ===== */
@@ -258,12 +311,16 @@ const TOKEN_KEY = 'safirPickerToken';
 const REGAL_COUNT = 6;
 const REGAL_COLORS = ['#1769d2', '#15965a', '#b7791f', '#7a3fc4', '#c43f7a', '#0f8a9d'];
 const MAX_VISIBLE = 40;
+const DONE_SECONDS = 5;
 
 let currentRegal = '';
 let items = [];
 let seq = 0;
 let flushing = false;
+let finishing = false;
 let audioCtx = null;
+let overlayMode = '';
+let overlayTimer = null;
 
 function fa(n) {
   return new Intl.NumberFormat('fa-IR').format(n);
@@ -316,6 +373,7 @@ function beep(freq, ms, times) {
 const okBeep = () => beep(880, 90, 1);
 const regalBeep = () => beep(660, 120, 2);
 const errBeep = () => beep(200, 320, 2);
+const doneBeep = () => beep(988, 160, 3);
 
 /* ---------- ارتباط با Apps Script ---------- */
 
@@ -405,6 +463,7 @@ function forceLogout(msg) {
 
   currentRegal = '';
   items = [];
+  hideOverlay();
 
   $('main').classList.add('hidden');
   $('login').classList.remove('hidden');
@@ -541,6 +600,143 @@ function render() {
   });
 }
 
+/* ---------- صفحه پایان کار ---------- */
+
+function showOverlay(mode, icon, title, lines, hint) {
+  overlayMode = mode;
+
+  const el = $('doneOverlay');
+  el.className = 'overlay ' + mode;
+
+  $('ovIcon').textContent = icon;
+  $('ovTitle').textContent = title;
+  $('ovHint').textContent = hint || '';
+
+  const box = $('ovLines');
+  box.innerHTML = '';
+  lines.forEach(t => {
+    const d = document.createElement('div');
+    d.textContent = t;
+    box.append(d);
+  });
+
+  clearTimeout(overlayTimer);
+  if (mode === 'ok') {
+    overlayTimer = setTimeout(hideOverlay, DONE_SECONDS * 1000);
+  }
+}
+
+function overlayVisible() {
+  return !$('doneOverlay').classList.contains('hidden');
+}
+
+function hideOverlay() {
+  clearTimeout(overlayTimer);
+  overlayTimer = null;
+  overlayMode = '';
+  $('doneOverlay').classList.add('hidden');
+  setTimeout(() => $('scanInput').focus(), 50);
+}
+
+// با اولین اسکن بعد از صفحه پایان: صفحه بسته می‌شود
+function dismissOverlay() {
+  const mode = overlayMode;
+  hideOverlay();
+
+  // بعد از خطا، نوبت قبلی بسته می‌شود تا با نوبت پیکر بعدی قاطی نشود
+  if (mode === 'err') {
+    items = items.filter(i => i.state === 'pending' || i.state === 'sending');
+    setRegal('');
+    render();
+  }
+}
+
+async function finishBatch() {
+  if (finishing) return;
+
+  const relevant = items.filter(i =>
+    i.state === 'pending' || i.state === 'sending' ||
+    i.state === 'saved' || i.state === 'error'
+  );
+
+  if (!relevant.length) {
+    setRegal('');
+    setMsg('info', 'سفارشی برای پایان وجود ندارد. بارکد رگال را اسکن کنید.');
+    return;
+  }
+
+  finishing = true;
+  setMsg('info', 'در حال ذخیره نهایی…');
+  flush();
+
+  const t0 = Date.now();
+
+  while (
+    items.some(i => i.state === 'pending' || i.state === 'sending') &&
+    Date.now() - t0 < 45000
+  ) {
+    if (!isLoggedIn()) {
+      finishing = false;
+      return;
+    }
+    await sleep(250);
+  }
+
+  finishing = false;
+
+  const waiting = items.filter(i => i.state === 'pending' || i.state === 'sending').length;
+  const errors = items.filter(i => i.state === 'error');
+  const saved = items.filter(i => i.state === 'saved');
+
+  const per = {};
+  saved.forEach(i => { per[i.regal] = (per[i.regal] || 0) + 1; });
+
+  const lines = Object.keys(per)
+    .sort()
+    .map(r => 'رگال ' + fa(r) + ': ' + fa(per[r]) + ' سفارش');
+
+  if (waiting) {
+    showOverlay(
+      'wait',
+      '📡',
+      'اینترنت قطع است؛ ' + fa(waiting) + ' سفارش هنوز ذخیره نشده',
+      lines,
+      'اینترنت را بررسی کنید و بعد از وصل شدن دوباره FINISH را اسکن کنید.'
+    );
+    errBeep();
+    return;
+  }
+
+  if (errors.length) {
+    const errLines = lines.slice();
+    errors.forEach(i => errLines.push('⚠ ' + i.order + ' — ' + (i.msg || 'ثبت نشد')));
+
+    showOverlay(
+      'err',
+      '⚠',
+      fa(errors.length) + ' سفارش ثبت نشد',
+      errLines,
+      'برای ادامه، یک بارکد اسکن کنید.'
+    );
+    errBeep();
+    return;
+  }
+
+  showOverlay(
+    'ok',
+    '✓',
+    fa(saved.length) + ' سفارش ثبت شد',
+    lines,
+    'پیکر بعدی می‌تواند شروع کند.'
+  );
+  doneBeep();
+
+  items = [];
+  setRegal('');
+  setMsg('info', 'بارکد رگال را اسکن کنید.');
+  render();
+}
+
 /* ---------- اسکن ---------- */
 
 function handleScan(raw) {
@@ -548,6 +744,22 @@ function handleScan(raw) {
   if (!v) return;
 
   const nv = norm(v).toUpperCase();
+
+  if (finishing) {
+    setMsg('info', 'در حال ذخیره نهایی؛ چند لحظه صبر کنید.');
+    return;
+  }
+
+  if (overlayVisible()) {
+    dismissOverlay();
+  }
+
+  // پایان کار پیکر
+  if (nv === 'FINISH') {
+    finishBatch();
+    return;
+  }
+
   const m = nv.match(/^(?:REGAL-?)?(\d)$/);
 
   // اسکن تک‌رقمی (یا REGAL-n) یعنی بارکد رگال
@@ -659,7 +871,7 @@ async function flush() {
         });
 
         if (hadError) {
-          setMsg('err', 'یک یا چند سفارش ثبت نشد؛ لیست پایین را ببینید.');
+          setMsg('err', 'یک یا چند سفارش ثبت نشد؛ لیست را ببینید.');
           errBeep();
         }
 
